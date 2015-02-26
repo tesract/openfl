@@ -1,23 +1,21 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
+package openfl.media; #if !flash #if !lime_legacy
 
-package openfl.media;
-#if display
+
+import haxe.io.Path;
+import lime.audio.AudioBuffer;
+import lime.audio.AudioSource;
+import openfl.events.Event;
+import openfl.events.EventDispatcher;
+import openfl.events.IOErrorEvent;
+import openfl.net.URLRequest;
+import openfl.utils.ByteArray;
 
 
 /**
  * The Sound class lets you work with sound in an application. The Sound class
- * lets you create a Sound object, load and play an external MP3, OGG or WAV file
- * into that object, close the sound stream, and access data about the sound, such
+ * lets you create a Sound object, load and play an external MP3 file into
+ * that object, close the sound stream, and access data about the sound, such
  * as information about the number of bytes in the stream and ID3 metadata.
- * Please note that native targets handle OGG and WAV formats only, and do not
- * support files in MP3 format. The HTML5 target handles either OGG, WAV, or MP3
- * files depending on the browser used. Flash target handles MP3 and WAV formats. 
  * More detailed control of the sound is performed through the sound source
  *  -  the SoundChannel or Microphone object for the sound  -  and through the
  * properties in the SoundTransform class that control the output of the sound
@@ -74,19 +72,28 @@ package openfl.media;
  *                   progresses.
  * @event sampleData Dispatched when the runtime requests new audio data.
  */
-extern class Sound extends openfl.events.EventDispatcher {
 
+@:autoBuild(openfl.Assets.embedSound())
+
+
+class Sound extends EventDispatcher {
+	
+	
+	#if html5
+	@:noCompletion private static var __registeredSounds = new Map<String, Bool> ();
+	#end
+	
 	/**
 	 * Returns the currently available number of bytes in this sound object. This
 	 * property is usually useful only for externally loaded files.
 	 */
-	var bytesLoaded(default,null) : UInt;
-
+	public var bytesLoaded (default, null):Int;
+	
 	/**
 	 * Returns the total number of bytes in this sound object.
 	 */
-	var bytesTotal(default,null) : Int;
-
+	public var bytesTotal (default, null):Int;
+	
 	/**
 	 * Provides access to the metadata that is part of an MP3 file.
 	 *
@@ -130,20 +137,20 @@ extern class Sound extends openfl.events.EventDispatcher {
 	 * href="http://www.adobe.com/go/devnet_security_en"
 	 * scope="external">Security</a>.</p>
 	 */
-	var id3(default,null) : ID3Info;
-
+	public var id3 (get, null):ID3Info;
+	
 	/**
-	 * Returns the buffering state of external sound files. If the value is
+	 * Returns the buffering state of external MP3 files. If the value is
 	 * <code>true</code>, any playback is currently suspended while the object
 	 * waits for more data.
 	 */
-	var isBuffering(default,null) : Bool;
-
+	public var isBuffering (default, null):Bool;
+	
 	/**
 	 * The length of the current sound in milliseconds.
 	 */
-	var length(default,null) : Float;
-
+	public var length (default, null):Float;
+	
 	/**
 	 * The URL from which this sound was loaded. This property is applicable only
 	 * to Sound objects that were loaded using the <code>Sound.load()</code>
@@ -171,8 +178,16 @@ extern class Sound extends openfl.events.EventDispatcher {
 	 * <p>In some cases, the value of the <code>url</code> property is truncated;
 	 * see the <code>isURLInaccessible</code> property for details.</p>
 	 */
-	var url(default,null) : String;
-
+	public var url (default, null):String;
+	
+	@:noCompletion private var __buffer:AudioBuffer;
+	
+	#if html5
+	@:noCompletion private var __sound:SoundJSInstance;
+	@:noCompletion private var __soundID:String;
+	#end
+	
+	
 	/**
 	 * Creates a new Sound object. If you pass a valid URLRequest object to the
 	 * Sound constructor, the constructor automatically calls the
@@ -195,8 +210,26 @@ extern class Sound extends openfl.events.EventDispatcher {
 	 *                whether the application should check for a cross-domain
 	 *                policy file prior to loading the sound.
 	 */
-	function new(?stream : openfl.net.URLRequest, ?context : SoundLoaderContext) : Void;
-
+	public function new (stream:URLRequest = null, context:SoundLoaderContext = null) {
+		
+		super (this);
+		
+		bytesLoaded = 0;
+		bytesTotal = 0;
+		id3 = null;
+		isBuffering = false;
+		length = 0;
+		url = null;
+		
+		if (stream != null) {
+			
+			load (stream, context);
+			
+		}
+		
+	}
+	
+	
 	/**
 	 * Closes the stream, causing any download of data to cease. No data may be
 	 * read from the stream after the <code>close()</code> method is called.
@@ -204,10 +237,36 @@ extern class Sound extends openfl.events.EventDispatcher {
 	 * @throws IOError The stream could not be closed, or the stream was not
 	 *                 open.
 	 */
-	function close() : Void;
-
+	public function close ():Void {
+		
+		#if !html5
+		if (__buffer != null) {
+			
+			__buffer.dispose ();
+			
+		}
+		#else
+		if (__registeredSounds.exists (__soundID)) {
+			
+			SoundJS.removeSound (__soundID);
+			
+		}
+		#end
+		
+	}
+	
+	
+	public static function fromAudioBuffer (buffer:AudioBuffer):Sound {
+		
+		var sound = new Sound ();
+		sound.__buffer = buffer;
+		return sound;
+		
+	}
+	
+	
 	/**
-	 * Initiates loading of an external sound file from the specified URL. If you
+	 * Initiates loading of an external MP3 file from the specified URL. If you
 	 * provide a valid URLRequest object to the Sound constructor, the
 	 * constructor calls <code>Sound.load()</code> for you. You only need to call
 	 * <code>Sound.load()</code> yourself if you don't pass a valid URLRequest
@@ -263,7 +322,7 @@ extern class Sound extends openfl.events.EventDispatcher {
 	 * href="http://www.adobe.com/go/devnet_security_en"
 	 * scope="external">Security</a>.</p>
 	 * 
-	 * @param stream  A URL that points to an external sound file.
+	 * @param stream  A URL that points to an external MP3 file.
 	 * @param context An optional SoundLoader context object, which can define
 	 *                the buffer time(the minimum number of milliseconds of MP3
 	 *                data to hold in the Sound object's buffer) and can specify
@@ -284,10 +343,57 @@ extern class Sound extends openfl.events.EventDispatcher {
 	 *                       Networking APIs" in the <i>ActionScript 3.0
 	 *                       Developer's Guide</i>.
 	 */
-	function load(stream : openfl.net.URLRequest, ?context : SoundLoaderContext) : Void;
-	function loadCompressedDataFromByteArray(bytes : openfl.utils.ByteArray, bytesLength : UInt) : Void;
-	function loadPCMFromByteArray(bytes : openfl.utils.ByteArray, samples : UInt, ?format : String, stereo : Bool = true, sampleRate : Float = 44100) : Void;
-
+	public function load (stream:URLRequest, context:SoundLoaderContext = null):Void {
+		
+		#if !html5
+		AudioBuffer.fromURL (stream.url, AudioBuffer_onURLLoad);
+		#else
+		url = stream.url;
+		__soundID = Path.withoutExtension (stream.url);
+		
+		if (!__registeredSounds.exists (__soundID)) {
+			
+			__registeredSounds.set (__soundID, true);
+			SoundJS.addEventListener ("fileload", SoundJS_onFileLoad);
+			SoundJS.addEventListener ("fileerror", SoundJS_onFileError);
+			SoundJS.registerSound (url, __soundID);
+			
+		} else {
+			
+			dispatchEvent (new Event (Event.COMPLETE));
+			
+		}
+		#end
+		
+	}
+	
+	
+	public function loadCompressedDataFromByteArray (bytes:ByteArray, bytesLength:Int, forcePlayAsMusic = false):Void {
+		
+		// TODO: handle byte length
+		
+		#if !html5
+		__buffer = AudioBuffer.fromBytes (bytes);
+		#else
+		openfl.Lib.notImplemented ("Sound.loadCompressedDataFromByteArray");
+		#end
+		
+	}
+	
+	
+	public function loadPCMFromByteArray (bytes:ByteArray, samples:Int, format:String = null, stereo:Bool = true, sampleRate:Float = 44100):Void {
+		
+		// TODO: handle pre-decoded data
+		
+		#if !html5
+		__buffer = AudioBuffer.fromBytes (bytes);
+		#else
+		openfl.Lib.notImplemented ("Sound.loadPCMFromByteArray");
+		#end
+		
+	}
+	
+	
 	/**
 	 * Generates a new SoundChannel object to play back the sound. This method
 	 * returns a SoundChannel object, which you access to stop the sound and to
@@ -306,8 +412,208 @@ extern class Sound extends openfl.events.EventDispatcher {
 	 *         you run out of available sound channels. The maximum number of
 	 *         sound channels available at once is 32.
 	 */
-	function play(startTime : Float = 0, loops : Int = 0, ?sndTransform : SoundTransform) : SoundChannel;
+	public function play (startTime:Float = 0.0, loops:Int = 0, sndTransform:SoundTransform = null):SoundChannel {
+		
+		if (sndTransform == null) {
+			
+			sndTransform = new SoundTransform (1, 0);
+			
+		}
+		
+		// TODO: handle start time, loops, sound transform
+		
+		#if !html5
+		var source = new AudioSource (__buffer);
+		return new SoundChannel (source);
+		#else
+		var instance = SoundJS.play (__soundID, SoundJS.INTERRUPT_ANY, 0, Std.int (startTime), loops, sndTransform.volume, sndTransform.pan);
+		return new SoundChannel (instance);
+		#end
+		
+	}
+	
+	
+	#if html5
+	@:noCompletion private static function __init__ ():Void {
+		
+		if (untyped window.createjs != null) {
+			
+			SoundJS.alternateExtensions = [ "ogg", "mp3", "wav" ];
+			
+		}
+		
+	}
+	#end
+	
+	
+	
+	
+	// Get & Set Methods
+	
+	
+	
+	
+	@:noCompletion private function get_id3 ():ID3Info {
+		
+		return new ID3Info ();
+		
+	}
+	
+	
+	
+	
+	// Event Handlers
+	
+	
+	
+	
+	@:noCompletion private function AudioBuffer_onURLLoad (buffer:AudioBuffer):Void {
+		
+		__buffer = buffer;
+		dispatchEvent (new Event (Event.COMPLETE));
+		
+	}
+	
+	
+	#if html5
+	@:noCompletion private function SoundJS_onFileLoad (event:Dynamic):Void {
+		
+		if (event.id == __soundID) {
+			
+			SoundJS.removeEventListener ("fileload", SoundJS_onFileLoad);
+			SoundJS.removeEventListener ("fileerror", SoundJS_onFileError);
+			dispatchEvent (new Event (Event.COMPLETE));
+			
+		}
+		
+	}
+	
+	@:noCompletion private function SoundJS_onFileError (event:Dynamic):Void {
+		
+		if (event.id == __soundID) {
+			
+			SoundJS.removeEventListener ("fileload", SoundJS_onFileLoad);
+			SoundJS.removeEventListener ("fileerror", SoundJS_onFileError);
+			dispatchEvent (new IOErrorEvent (IOErrorEvent.IO_ERROR));
+			
+		}
+		
+	}
+	#end
+	
+	
 }
 
 
+#if html5
+@:native("createjs.Sound") extern class SoundJS {
+	
+	public static function addEventListener (type:String, listener:Dynamic, ?useCapture:Bool):Dynamic;
+	public static function dispatchEvent (eventObj:Dynamic, ?target:Dynamic):Bool;
+	public static function hasEventListener (type:String):Bool;
+	public static function removeAllEventListeners (?type:String):Void;
+	public static function removeEventListener (type:String, listener:Dynamic, ?useCapture:Bool):Void;
+	
+	public static function createInstance (src:String):SoundJSInstance;
+	public static function getCapabilities ():Dynamic;
+	public static function getCapability (key:String):Dynamic;
+	public static function getMute ():Bool;
+	public static function getVolume ():Float;
+	public static function initializeDefaultPlugins ():Bool;
+	public static function isReady ():Bool;
+	public static function loadComplete (src:String):Bool;
+	//public static function mute(value:Bool):Void;
+	public static function play (src:String, ?interrupt:String = INTERRUPT_NONE, ?delay:Int = 0, ?offset:Int = 0, ?loop:Int = 0, ?volume:Float = 1, ?pan:Float = 0):SoundJSInstance;
+	public static function registerManifest (manifest:Array<Dynamic>, basepath:String):Dynamic;
+	public static function registerPlugin (plugin:Dynamic):Bool;
+	public static function registerPlugins (plugins:Array<Dynamic>):Bool;
+	public static function registerSound (src:String, ?id:String, ?data:Float, ?preload:Bool = true):Dynamic;
+	
+	public static function removeAllSounds ():Void;
+	public static function removeManifest (manifest:Array<Dynamic>):Dynamic;
+	public static function removeSound (src:String):Void;
+	
+	public static function setMute (value:Bool):Bool;
+	public static function setVolume (value:Float):Void;
+	public static function stop ():Void;
+	
+	public static var activePlugin:Dynamic;
+	public static var alternateExtensions:Array<String>;
+	//public static var AUDIO_TIMEOUT:Float;
+	public static var defaultInterruptBehavior:String;
+	public static var DELIMITER:String;
+	//public static var EXTENSION_MAP:Dynamic;
+	public static inline var INTERRUPT_ANY:String = "any";
+	public static inline var INTERRUPT_EARLY:String = "early";
+	public static inline var INTERRUPT_LATE:String = "late";
+	public static inline var INTERRUPT_NONE:String = "none";
+	//public var onLoadComplete:Dynamic->Void;
+	public static var PLAY_FAILED:String;
+	public static var PLAY_FINISHED:String;
+	public static var PLAY_INITED:String;
+	public static var PLAY_INTERRUPTED:String;
+	public static var PLAY_SUCCEEDED:String;
+	public static var SUPPORTED_EXTENSIONS:Array<String>;
+	
+}
+
+
+@:native("createjs.SoundInstance") extern class SoundJSInstance extends SoundJSEventDispatcher {
+	
+	public function new (src:String, owner:Dynamic):Void;
+	public function getDuration ():Int;
+	public function getMute ():Bool;
+	public function getPan ():Float;
+	public function getPosition ():Int;
+	public function getVolume ():Float;
+	//public function mute (value:Bool):Bool;
+	public function pause ():Bool;
+	public function play (?interrupt:String = Sound.INTERRUPT_NONE, ?delay:Int = 0, ?offset:Int = 0, ?loop:Int = 0, ?volume:Float = 1, ?pan:Float = 0):Void;
+	public function resume ():Bool;
+	public function setMute (value:Bool):Bool;
+	public function setPan (value:Float):Float;
+	public function setPosition (value:Int):Void;
+	public function setVolume (value:Float):Bool;
+	public function stop ():Bool;
+	
+	public var gainNode:Dynamic;
+	public var pan:Float;
+	public var panNode:Dynamic;
+	public var playState:String;
+	public var sourceNode:Dynamic;
+	//public var startTime:Float;
+	public var uniqueId:Dynamic;
+	public var volume:Float;
+	
+	public var onComplete:SoundJSInstance->Void;
+	public var onLoop:SoundJSInstance->Void;
+	public var onPlayFailed:SoundJSInstance->Void;
+	public var onPlayInterrupted:SoundJSInstance->Void;
+	public var onPlaySucceeded:SoundJSInstance->Void;
+	public var onReady:SoundJSInstance->Void;
+	
+}
+
+
+@:native("createjs.EventDispatcher") extern class SoundJSEventDispatcher {
+	
+	public function addEventListener (type:String, listener:Dynamic, ?useCapture:Bool):Dynamic;
+	public function dispatchEvent (eventObj:Dynamic, ?target:Dynamic):Bool;
+	public function hasEventListener (type:String):Bool;
+	public static function initialize (target:Dynamic):Void;
+	public function off (type:String, listener:Dynamic, ?useCapture:Bool):Bool;
+	public function on (type:String, listener:Dynamic, ?scope:Dynamic, ?once:Bool=false, ?data:Dynamic = null, ?useCapture:Bool=false):Dynamic;
+	public function removeAllEventListeners (?type:String):Void;
+	public function removeEventListener(type:String, listener:Dynamic, ?useCapture:Bool):Void;
+	public function toString ():String;
+	
+}
+#end
+
+
+#else
+typedef Sound = openfl._v2.media.Sound;
+#end
+#else
+typedef Sound = flash.media.Sound;
 #end

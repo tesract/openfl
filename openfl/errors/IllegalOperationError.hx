@@ -1,13 +1,4 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
-
-package openfl.errors;
-#if display
+package openfl.errors; #if !flash
 
 
 /**
@@ -32,15 +23,24 @@ package openfl.errors;
  * object</li>
  * </ul>
  */
-extern class IllegalOperationError extends Error {
-
+class IllegalOperationError extends Error {
+	
+	
 	/**
 	 * Creates a new IllegalOperationError object.
 	 * 
 	 * @param message A string associated with the error object.
 	 */
-	function new(?message : String, id : Int = 0) : Void;
+	public function new (inMessage:String = "") {
+		
+		super (inMessage, 0);
+		
+	}
+	
+	
 }
 
 
+#else
+typedef IllegalOperationError = flash.errors.IllegalOperationError;
 #end

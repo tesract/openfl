@@ -1,13 +1,13 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
+package openfl.display; #if !flash #if !lime_legacy
 
-package openfl.display;
-#if display
+
+import openfl._internal.renderer.canvas.CanvasGraphics;
+import openfl._internal.renderer.canvas.CanvasShape;
+import openfl._internal.renderer.dom.DOMShape;
+import openfl._internal.renderer.opengl.utils.GraphicsRenderer;
+import openfl._internal.renderer.RenderSession;
+import openfl.geom.Matrix;
+import openfl.geom.Rectangle;
 
 
 /**
@@ -24,19 +24,124 @@ package openfl.display;
  * However, a Sprite object supports user input events, while a Shape object
  * does not.</p>
  */
-extern class Shape extends DisplayObject {
 
+@:access(openfl.display.Graphics)
+
+
+class Shape extends DisplayObject {
+	
+	
 	/**
 	 * Specifies the Graphics object belonging to this Shape object, where vector
 	 * drawing commands can occur.
 	 */
-	var graphics(default,null) : Graphics;
-
+	public var graphics (get, null):Graphics;
+	
+	
 	/**
 	 * Creates a new Shape object.
 	 */
-	function new() : Void;
+	public function new () {
+		
+		super ();
+		
+	}
+	
+	
+	@:noCompletion private override function __getBounds (rect:Rectangle, matrix:Matrix):Void {
+		
+		if (__graphics != null) {
+			
+			__graphics.__getBounds (rect, __worldTransform);
+			
+		}
+		
+	}
+	
+	
+	@:noCompletion private override function __hitTest (x:Float, y:Float, shapeFlag:Bool, stack:Array<DisplayObject>, interactiveOnly:Bool):Bool {
+		
+		if (visible && __graphics != null && __graphics.__hitTest (x, y, shapeFlag, __getTransform ())) {
+			
+			if (!interactiveOnly) {
+				
+				stack.push (this);
+				
+			}
+			
+			return true;
+			
+		}
+		
+		return false;
+		
+	}
+	
+	
+	@:noCompletion public override function __renderCanvas (renderSession:RenderSession):Void {
+		
+		CanvasShape.render (this, renderSession);
+		
+	}
+	
+	
+	@:noCompletion public override function __renderDOM (renderSession:RenderSession):Void {
+		
+		DOMShape.render (this, renderSession);
+		
+	}
+	
+	
+	@:noCompletion public override function __renderGL (renderSession:RenderSession):Void {
+		
+		if (!__renderable || __worldAlpha <= 0) return;
+		
+		if (__graphics != null) {
+			
+			GraphicsRenderer.render (this, renderSession);
+			
+		}
+		
+	}
+	
+	
+	@:noCompletion public override function __renderMask (renderSession:RenderSession):Void {
+		
+		if (__graphics != null) {
+			
+			CanvasGraphics.renderMask (__graphics, renderSession);
+			
+		}
+		
+	}
+	
+	
+	
+	
+	// Get & Set Methods
+	
+	
+	
+	
+	@:noCompletion private function get_graphics ():Graphics {
+		
+		if (__graphics == null) {
+			
+			__graphics = new Graphics ();
+			
+		}
+		
+		return __graphics;
+		
+	}
+	
+	
 }
 
 
+#else
+typedef Shape = openfl._v2.display.Shape;
+#end
+#else
+typedef Shape = flash.display.Shape;
 #end

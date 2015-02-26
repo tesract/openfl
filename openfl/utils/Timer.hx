@@ -1,13 +1,14 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
+package openfl.utils; #if !flash #if !lime_legacy
 
-package openfl.utils;
-#if display
+
+import haxe.Timer in HaxeTimer;
+import openfl.errors.Error;
+import openfl.events.EventDispatcher;
+import openfl.events.TimerEvent;
+
+#if js
+import js.Browser;
+#end
 
 
 /**
@@ -31,14 +32,15 @@ package openfl.utils;
  * @event timerComplete Dispatched whenever it has completed the number of
  *                      requests set by <code>Timer.repeatCount</code>.
  */
-extern class Timer extends openfl.events.EventDispatcher {
-
+class Timer extends EventDispatcher {
+	
+	
 	/**
 	 * The total number of times the timer has fired since it started at zero. If
 	 * the timer has been reset, only the fires since the reset are counted.
 	 */
-	var currentCount(default,null) : Int;
-
+	public var currentCount (default, null):Int;
+	
 	/**
 	 * The delay, in milliseconds, between timer events. If you set the delay
 	 * interval while the timer is running, the timer will restart at the same
@@ -51,8 +53,8 @@ extern class Timer extends openfl.events.EventDispatcher {
 	 * @throws Error Throws an exception if the delay specified is negative or
 	 *               not a finite number.
 	 */
-	var delay : Float;
-
+	public var delay (get, set):Float;
+	
 	/**
 	 * The total number of times the timer is set to run. If the repeat count is
 	 * set to 0, the timer continues forever or until the <code>stop()</code>
@@ -61,14 +63,19 @@ extern class Timer extends openfl.events.EventDispatcher {
 	 * is set to a total that is the same or less then <code>currentCount</code>
 	 * the timer stops and will not fire again.
 	 */
-	var repeatCount : Int;
-
+	public var repeatCount (default, set):Int;
+	
 	/**
 	 * The timer's current state; <code>true</code> if the timer is running,
 	 * otherwise <code>false</code>.
 	 */
-	var running(default,null) : Bool;
-
+	public var running (default, null):Bool;
+	
+	@:noCompletion private var __delay:Float;
+	@:noCompletion private var __timer:HaxeTimer;
+	@:noCompletion private var __timerID:Int;
+	
+	
 	/**
 	 * Constructs a new Timer object with the specified <code>delay</code> and
 	 * <code>repeatCount</code> states.
@@ -86,8 +93,25 @@ extern class Timer extends openfl.events.EventDispatcher {
 	 *                    specified number of times and then stops.
 	 * @throws Error if the delay specified is negative or not a finite number
 	 */
-	function new(delay : Float, repeatCount : Int = 0) : Void;
-
+	public function new (delay:Float, repeatCount:Int = 0):Void {
+		
+		if (Math.isNaN (delay) || delay < 0) {
+			
+			throw new Error ("The delay specified is negative or not a finite number");
+			
+		}
+		
+		super ();
+		
+		__delay = delay;
+		this.repeatCount = repeatCount;
+		
+		running = false;
+		currentCount = 0;
+		
+	}
+	
+	
 	/**
 	 * Stops the timer, if it is running, and sets the <code>currentCount</code>
 	 * property back to 0, like the reset button of a stopwatch. Then, when
@@ -95,22 +119,146 @@ extern class Timer extends openfl.events.EventDispatcher {
 	 * number of repetitions, as set by the <code>repeatCount</code> value.
 	 * 
 	 */
-	function reset() : Void;
-
+	public function reset ():Void {
+		
+		if (running) {
+			
+			stop ();
+			
+		}
+		
+		currentCount = 0;
+		
+	}
+	
+	
 	/**
 	 * Starts the timer, if it is not already running.
 	 * 
 	 */
-	function start() : Void;
-
+	public function start ():Void {
+		
+		if (!running) {
+			
+			running = true;
+			
+			#if js
+			__timerID = Browser.window.setInterval (timer_onTimer, Std.int (__delay));
+			#else
+			__timer = new HaxeTimer (__delay);
+			__timer.run = timer_onTimer;
+			#end
+			
+		}
+		
+	}
+	
+	
 	/**
 	 * Stops the timer. When <code>start()</code> is called after
 	 * <code>stop()</code>, the timer instance runs for the <i>remaining</i>
 	 * number of repetitions, as set by the <code>repeatCount</code> property.
 	 * 
 	 */
-	function stop() : Void;
+	public function stop ():Void {
+		
+		running = false;
+		
+		#if js
+		if (__timerID != null) {
+			
+			Browser.window.clearInterval (__timerID);
+			__timerID = null;
+			
+		}
+		#else
+		if (__timer != null) {
+			
+			__timer.stop ();
+			__timer = null;
+			
+		}
+		#end
+		
+	}
+	
+	
+	
+	
+	// Getters & Setters
+	
+	
+	
+	
+	@:noCompletion private function get_delay ():Float {
+		
+		return __delay;
+		
+	}
+	
+	
+	@:noCompletion private function set_delay (value:Float):Float {
+		
+		__delay = value;
+		
+		if (running) {
+			
+			stop ();
+			start ();
+			
+		}
+		
+		return __delay;
+		
+	}
+	
+	
+	@:noCompletion private function set_repeatCount (v:Int):Int {
+		
+		if (running && v != 0 && v <= currentCount) {
+			
+			stop ();
+			
+		}
+		
+		repeatCount = v;
+		return v;
+		
+	}
+	
+	
+	
+	
+	// Event Handlers
+	
+	
+	
+	
+	@:noCompletion private function timer_onTimer ():Void {
+		
+		currentCount ++;
+		
+		if (repeatCount > 0 && currentCount >= repeatCount) {
+			
+			stop ();
+			dispatchEvent (new TimerEvent (TimerEvent.TIMER));
+			dispatchEvent (new TimerEvent (TimerEvent.TIMER_COMPLETE));
+			
+		} else {
+			
+			dispatchEvent (new TimerEvent (TimerEvent.TIMER));
+			
+		}
+		
+	}
+	
+	
 }
 
 
+#else
+typedef Timer = openfl._v2.utils.Timer;
+#end
+#else
+typedef Timer = flash.utils.Timer;
 #end

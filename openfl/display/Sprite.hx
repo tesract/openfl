@@ -1,13 +1,14 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
+package openfl.display; #if !flash #if !lime_legacy
 
-package openfl.display;
-#if display
+
+import openfl._internal.renderer.canvas.CanvasGraphics;
+import openfl._internal.renderer.canvas.CanvasShape;
+import openfl._internal.renderer.dom.DOMShape;
+import openfl._internal.renderer.opengl.utils.GraphicsRenderer;
+import openfl._internal.renderer.RenderSession;
+import openfl.geom.Matrix;
+import openfl.geom.Point;
+import openfl.geom.Rectangle;
 
 
 /**
@@ -24,8 +25,14 @@ package openfl.display;
  * functionality of previous ActionScript releases to provide backward
  * compatibility.</p>
  */
-extern class Sprite extends DisplayObjectContainer {
 
+@:access(openfl.display.Graphics)
+@:access(openfl.display.Stage)
+
+
+class Sprite extends DisplayObjectContainer {
+	
+	
 	/**
 	 * Specifies the button mode of this sprite. If <code>true</code>, this
 	 * sprite behaves as a button, which means that it triggers the display of
@@ -55,14 +62,14 @@ extern class Sprite extends DisplayObjectContainer {
 	 * clips used as buttons). These automatic state changes are not available
 	 * for sprites, which have no timeline, and thus no frames to label. </p>
 	 */
-	var buttonMode : Bool;
-
+	public var buttonMode:Bool;
+	
 	/**
 	 * Specifies the Graphics object that belongs to this sprite where vector
 	 * drawing commands can occur.
 	 */
-	var graphics(default,null) : Graphics;
-
+	public var graphics (get, null):Graphics;
+	
 	/**
 	 * A Boolean value that indicates whether the pointing hand(hand cursor)
 	 * appears when the pointer rolls over a sprite in which the
@@ -83,16 +90,26 @@ extern class Sprite extends DisplayObjectContainer {
 	 * <code>buttonMode</code> properties to <code>true</code>, and the
 	 * <code>mouseChildren</code> property to <code>false</code>.</p>
 	 */
-	var useHandCursor : Bool;
-
+	public var useHandCursor:Bool;
+	
+	
 	/**
 	 * Creates a new Sprite instance. After you create the Sprite instance, call
 	 * the <code>DisplayObjectContainer.addChild()</code> or
 	 * <code>DisplayObjectContainer.addChildAt()</code> method to add the Sprite
 	 * to a parent DisplayObjectContainer.
 	 */
-	function new() : Void;
-
+	public function new () {
+		
+		super ();
+		
+		buttonMode = false;
+		useHandCursor = true;
+		loaderInfo = LoaderInfo.create (null);
+		
+	}
+	
+	
 	/**
 	 * Lets the user drag the specified sprite. The sprite remains draggable
 	 * until explicitly stopped through a call to the
@@ -113,8 +130,17 @@ extern class Sprite extends DisplayObjectContainer {
 	 * @param bounds     Value relative to the coordinates of the Sprite's parent
 	 *                   that specify a constraint rectangle for the Sprite.
 	 */
-	function startDrag(lockCenter : Bool = false, ?bounds : openfl.geom.Rectangle) : Void;
-
+	public function startDrag (lockCenter:Bool = false, bounds:Rectangle = null):Void {
+		
+		if (stage != null) {
+			
+			stage.__startDrag (this, lockCenter, bounds);
+			
+		}
+		
+	}
+	
+	
 	/**
 	 * Ends the <code>startDrag()</code> method. A sprite that was made draggable
 	 * with the <code>startDrag()</code> method remains draggable until a
@@ -122,8 +148,143 @@ extern class Sprite extends DisplayObjectContainer {
 	 * draggable. Only one sprite is draggable at a time.
 	 * 
 	 */
-	function stopDrag() : Void;
+	public function stopDrag ():Void {
+		
+		if (stage != null) {
+			
+			stage.__stopDrag (this);
+			
+		}
+		
+	}
+	
+	
+	@:noCompletion private override function __getBounds (rect:Rectangle, matrix:Matrix):Void {
+		
+		super.__getBounds (rect, matrix);
+		
+		if (__graphics != null) {
+			
+			__graphics.__getBounds (rect, matrix != null ? matrix : __worldTransform);
+			
+		}
+		
+	}
+	
+	
+	@:noCompletion private override function __hitTest (x:Float, y:Float, shapeFlag:Bool, stack:Array<DisplayObject>, interactiveOnly:Bool):Bool {
+		
+		if (!visible || (interactiveOnly && !mouseEnabled)) return false;
+		
+		var length = 0;
+		
+		if (stack != null) {
+			
+			length = stack.length;
+			
+		}
+		
+		if (super.__hitTest (x, y, shapeFlag, stack, interactiveOnly)) {
+			
+			return interactiveOnly;
+			
+		} else if (__graphics != null && __graphics.__hitTest (x, y, shapeFlag, __getTransform ())) {
+			
+			if (stack != null) {
+				
+				stack.push (this);
+				
+			}
+			
+			return true;
+			
+		}
+		
+		return false;
+		
+	}
+	
+	
+	@:noCompletion public override function __renderCanvas (renderSession:RenderSession):Void {
+		
+		CanvasShape.render (this, renderSession);
+		
+		super.__renderCanvas (renderSession);
+		
+	}
+	
+	
+	@:noCompletion public override function __renderDOM (renderSession:RenderSession):Void {
+		
+		DOMShape.render (this, renderSession);
+		
+		super.__renderDOM (renderSession);
+		
+	}
+	
+	
+	@:noCompletion public override function __renderGL (renderSession:RenderSession):Void {
+		
+		if (!__renderable || __worldAlpha <= 0) return;
+		
+		if (__graphics != null) {
+			
+			GraphicsRenderer.render (this, renderSession);
+			//__graphics.__render (renderSession);
+			
+			/*if (__graphics.__canvas != null) {
+				
+				
+			}*/
+			
+		}
+		
+		super.__renderGL (renderSession);
+		
+	}
+	
+	
+	@:noCompletion public override function __renderMask (renderSession:RenderSession):Void {
+		
+		if (__graphics != null) {
+			
+			CanvasGraphics.renderMask (__graphics, renderSession);
+			
+		} else {
+			
+			super.__renderMask (renderSession);
+			
+		}
+		
+	}
+	
+	
+	
+	
+	// Get & Set Methods
+	
+	
+	
+	
+	@:noCompletion private function get_graphics ():Graphics {
+		
+		if (__graphics == null) {
+			
+			__graphics = new Graphics ();
+			
+		}
+		
+		return __graphics;
+		
+	}
+	
+	
 }
 
 
+#else
+typedef Sprite = openfl._v2.display.Sprite;
+#end
+#else
+typedef Sprite = flash.display.Sprite;
 #end

@@ -1,33 +1,26 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
-
-package openfl.net;
-#if display
+package openfl.net; #if !flash
 
 
 /**
  * The SharedObjectFlushStatus class provides values for the code returned
  * from a call to the <code>SharedObject.flush()</code> method.
  */
-extern class SharedObjectFlushStatus {
-	function new() : Void;
-
+@:fakeEnum(String) enum SharedObjectFlushStatus {
+	
 	/**
 	 * Indicates that the flush completed successfully.
 	 */
-	static var FLUSHED : String;
-
+	FLUSHED;
+	
 	/**
 	 * Indicates that the user is being prompted to increase disk space for the
 	 * shared object before the flush can occur.
 	 */
-	static var PENDING : String;
+	PENDING;
+	
 }
 
 
+#else
+typedef SharedObjectFlushStatus = flash.net.SharedObjectFlushStatus;
 #end

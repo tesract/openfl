@@ -1,13 +1,12 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
+package openfl.ui; #if !flash #if !lime_legacy
 
-package openfl.ui;
-#if display
+
+import openfl.ui.MultitouchInputMode;
+import openfl.Lib;
+
+#if js
+import js.Browser;
+#end
 
 
 /**
@@ -29,11 +28,11 @@ package openfl.ui;
  *
  * <p>
  * <ul>
- *   <li>openfl.events.TouchEvent</li>
- *   <li>openfl.events.GestureEvent</li>
- *   <li>openfl.events.GesturePhase</li>
- *   <li>openfl.events.TransformGestureEvent</li>
- *   <li>openfl.events.PressAndTapGestureEvent</li>
+ *   <li>flash.events.TouchEvent</li>
+ *   <li>flash.events.GestureEvent</li>
+ *   <li>flash.events.GesturePhase</li>
+ *   <li>flash.events.TransformGestureEvent</li>
+ *   <li>flash.events.PressAndTapGestureEvent</li>
  * </ul>
  * </p>
  *
@@ -48,26 +47,27 @@ package openfl.ui;
  * <p><b>Note:</b> The Multitouch feature is not supported for SWF files
  * embedded in HTML running on Mac OS.</p>
  */
-extern class Multitouch {
-
+class Multitouch {
+	
+	
 	/**
 	 * Identifies the multi-touch mode for touch and gesture event handling. Use
 	 * this property to manage whether or not events are dispatched as touch
 	 * events with multiple points of contact and specific events for different
 	 * gestures(such as rotation and pan), or only a single point of contact
 	 * (such as tap), or none at all(contact is handled as a mouse event). To
-	 * set this property, use values from the openfl.ui.MultitouchInputMode class.
+	 * set this property, use values from the flash.ui.MultitouchInputMode class.
 	 * 
 	 * @default gesture
 	 */
-	static var inputMode : MultitouchInputMode;
-
+	public static var inputMode (get, set):MultitouchInputMode;
+	
 	/**
 	 * The maximum number of concurrent touch points supported by the current
 	 * environment.
 	 */
-	static var maxTouchPoints(default,null) : Int;
-
+	public static var maxTouchPoints (default, null):Int;
+	
 	/**
 	 * A Vector array(a typed array of string values) of multi-touch contact
 	 * types supported in the current environment. The array of strings can be
@@ -88,8 +88,8 @@ extern class Multitouch {
 	 * that are not supported in the current evironment, you'll need to create
 	 * alternative event handling.</p>
 	 */
-	static var supportedGestures(default,null) : openfl.Vector<String>;
-
+	public static var supportedGestures (default, null):Array<String>;
+	
 	/**
 	 * Indicates whether the current environment supports gesture input, such as
 	 * rotating two fingers around a touch screen. Gesture events are listed in
@@ -101,14 +101,73 @@ extern class Multitouch {
 	 * <code>true</code> even if the hardware does not support gesture
 	 * events.</p>
 	 */
-	static var supportsGestureEvents(default,null) : Bool;
-
+	public static var supportsGestureEvents (default, null):Bool;
+	
 	/**
 	 * Indicates whether the current environment supports basic touch input, such
 	 * as a single finger tap. Touch events are listed in the TouchEvent class.
 	 */
-	static var supportsTouchEvents(default,null) : Bool;
+	public static var supportsTouchEvents (get, null):Bool;
+	
+	
+	@:noCompletion public static function __init__ () {
+		
+		maxTouchPoints = 2;
+		supportedGestures = null;
+		supportsGestureEvents = false;
+		
+	}
+	
+	
+	
+	
+	// Getters & Setters
+	
+	
+	
+	
+	@:noCompletion private static function get_inputMode ():MultitouchInputMode {
+		
+		return MultitouchInputMode.TOUCH_POINT;
+		
+	}
+	
+	
+	@:noCompletion private static function set_inputMode (inMode:MultitouchInputMode):MultitouchInputMode {
+		
+		if (inMode == MultitouchInputMode.GESTURE) {
+			
+			return inputMode;
+			
+		}
+		
+		// @todo set input mode
+		return inMode;
+		
+	}
+	
+	
+	@:noCompletion private static function get_supportsTouchEvents ():Bool {
+		
+		#if js
+		if (untyped __js__ ("('ontouchstart' in document.documentElement) || (window.DocumentTouch && document instanceof DocumentTouch)")) {
+			
+			return true;
+			
+		}
+		#end
+		
+		return false;
+		
+	}
+	
+	
 }
 
 
+#else
+typedef Multitouch = openfl._v2.ui.Multitouch;
+#end
+#else
+typedef Multitouch = flash.ui.Multitouch;
 #end

@@ -1,13 +1,4 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
-
-package openfl.events;
-#if display
+package openfl.events; #if !flash
 
 
 /**
@@ -20,13 +11,31 @@ package openfl.events;
  * the NativeProcess class.
  * 
  */
-extern class ProgressEvent extends Event {
-
+class ProgressEvent extends Event {
+	
+	
+	/**
+	 * Defines the value of the <code>type</code> property of a
+	 * <code>progress</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var PROGRESS:String = "progress";
+	
+	/**
+	 * Defines the value of the <code>type</code> property of a
+	 * <code>socketData</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var SOCKET_DATA:String = "socketData";
+	
+	
 	/**
 	 * The number of items or bytes loaded when the listener processes the event.
 	 */
-	var bytesLoaded : Float;
-
+	public var bytesLoaded:Float;
+	
 	/**
 	 * The total number of items or bytes that will be loaded if the loading
 	 * process succeeds. If the progress event is dispatched/attached to a Socket
@@ -34,8 +43,9 @@ extern class ProgressEvent extends Event {
 	 * bytesTotal parameter of the constructor. The actual number of bytes sent
 	 * back or forth is not set and is up to the application developer.
 	 */
-	var bytesTotal : Float;
-
+	public var bytesTotal:Float;
+	
+	
 	/**
 	 * Creates an Event object that contains information about progress events.
 	 * Event objects are passed as parameters to event listeners.
@@ -54,24 +64,33 @@ extern class ProgressEvent extends Event {
 	 * @param bytesTotal  The total number of items or bytes that will be loaded
 	 *                    if the loading process succeeds.
 	 */
-	function new(type : String, bubbles : Bool = false, cancelable : Bool = false, bytesLoaded : Float = 0, bytesTotal : Float = 0) : Void;
-
-	/**
-	 * Defines the value of the <code>type</code> property of a
-	 * <code>progress</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var PROGRESS : String;
-
-	/**
-	 * Defines the value of the <code>type</code> property of a
-	 * <code>socketData</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var SOCKET_DATA : String;
+	public function new (type:String, bubbles:Bool = false, cancelable:Bool = false, bytesLoaded:Float = 0, bytesTotal:Float = 0) {
+		
+		super (type, bubbles, cancelable);
+		
+		this.bytesLoaded = bytesLoaded;
+		this.bytesTotal = bytesTotal;
+		
+	}
+	
+	
+	public override function clone ():Event {
+		
+		return new ProgressEvent (type, bubbles, cancelable, bytesLoaded, bytesTotal);
+		
+	}
+	
+	
+	public override function toString ():String {
+		
+		return "[ProgressEvent type=" + type + " bubbles=" + bubbles + " cancelable=" + cancelable + " bytesLoaded=" + bytesLoaded + " bytesTotal=" + bytesTotal + "]";
+		
+	}
+	
+	
 }
 
 
+#else
+typedef ProgressEvent = flash.events.ProgressEvent;
 #end

@@ -1,13 +1,4 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
-
-package openfl.filters;
-#if display
+package openfl.filters; #if !flash #if !lime_legacy
 
 
 /**
@@ -56,49 +47,50 @@ package openfl.filters;
  * filter is turned off if the resulting image exceeds the maximum
  * dimensions.</p>
  */
-@:final extern class GlowFilter extends BitmapFilter {
-
+class GlowFilter extends BitmapFilter {
+	
+	
 	/**
 	 * The alpha transparency value for the color. Valid values are 0 to 1. For
 	 * example, .25 sets a transparency value of 25%. The default value is 1.
 	 */
-	var alpha : Float;
-
+	public var alpha:Float;
+	
 	/**
 	 * The amount of horizontal blur. Valid values are 0 to 255(floating point).
 	 * The default value is 6. Values that are a power of 2(such as 2, 4, 8, 16,
 	 * and 32) are optimized to render more quickly than other values.
 	 */
-	var blurX : Float;
-
+	public var blurX:Float;
+	
 	/**
 	 * The amount of vertical blur. Valid values are 0 to 255(floating point).
 	 * The default value is 6. Values that are a power of 2(such as 2, 4, 8, 16,
 	 * and 32) are optimized to render more quickly than other values.
 	 */
-	var blurY : Float;
-
+	public var blurY:Float;
+	
 	/**
 	 * The color of the glow. Valid values are in the hexadecimal format
 	 * 0x<i>RRGGBB</i>. The default value is 0xFF0000.
 	 */
-	var color : UInt;
-
+	public var color:Int;
+	
 	/**
 	 * Specifies whether the glow is an inner glow. The value <code>true</code>
 	 * indicates an inner glow. The default is <code>false</code>, an outer glow
 	 * (a glow around the outer edges of the object).
 	 */
-	var inner : Bool;
-
+	public var inner:Bool;
+	
 	/**
 	 * Specifies whether the object has a knockout effect. A value of
 	 * <code>true</code> makes the object's fill transparent and reveals the
 	 * background color of the document. The default value is <code>false</code>
 	 * (no knockout effect).
 	 */
-	var knockout : Bool;
-
+	public var knockout:Bool;
+	
 	/**
 	 * The number of times to apply the filter. The default value is
 	 * <code>BitmapFilterQuality.LOW</code>, which is equivalent to applying the
@@ -113,15 +105,16 @@ package openfl.filters;
 	 * a similar effect, and with faster rendering, by simply increasing the
 	 * values of the <code>blurX</code> and <code>blurY</code> properties.</p>
 	 */
-	var quality : Int;
-
+	public var quality:Int;
+	
 	/**
 	 * The strength of the imprint or spread. The higher the value, the more
 	 * color is imprinted and the stronger the contrast between the glow and the
 	 * background. Valid values are 0 to 255. The default is 2.
 	 */
-	var strength : Float;
-
+	public var strength:Float;
+	
+	
 	/**
 	 * Initializes a new GlowFilter instance with the specified parameters.
 	 * 
@@ -161,8 +154,35 @@ package openfl.filters;
 	 *                 transparent and reveals the background color of the
 	 *                 document.
 	 */
-	function new(color : UInt = 16711680, alpha : Float = 1, blurX : Float = 6, blurY : Float = 6, strength : Float = 2, quality : Int = 1, inner : Bool = false, knockout : Bool = false) : Void;
+	public function new (color:Int = 0, alpha:Float = 1, blurX:Float = 6, blurY:Float = 6, strength:Float = 2, quality:Int = 1, inner:Bool = false, knockout:Bool = false) {
+		
+		super ();
+		
+		this.color = color;
+		this.alpha = alpha;
+		this.blurX = blurX;
+		this.blurY = blurY;
+		this.strength = strength;
+		this.quality = quality;
+		this.inner = inner;
+		this.knockout = knockout;
+		
+	}
+	
+	
+	public override function clone ():BitmapFilter {
+		
+		return new GlowFilter (color, alpha, blurX, blurY, strength, quality, inner, knockout);
+		
+	}
+	
+	
 }
 
 
+#else
+typedef GlowFilter = openfl._v2.filters.GlowFilter;
+#end
+#else
+typedef GlowFilter = flash.filters.GlowFilter;
 #end

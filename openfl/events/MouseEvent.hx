@@ -1,13 +1,8 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
+package openfl.events; #if !flash #if !lime_legacy
 
-package openfl.events;
-#if display
+
+import openfl.display.InteractiveObject;
+import openfl.geom.Point;
 
 
 /**
@@ -23,28 +18,164 @@ package openfl.events;
  * mouse event you want to detect.</p>
  * 
  */
-extern class MouseEvent extends Event {
+class MouseEvent extends Event {
+	
+	
+	/**
+	 * Defines the value of the <code>type</code> property of a
+	 * <code>click</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var CLICK:String = "click";
+	
+	/**
+	 * Defines the value of the <code>type</code> property of a
+	 * <code>doubleClick</code> event object. The <code>doubleClickEnabled</code>
+	 * property must be <code>true</code> for an object to generate the
+	 * <code>doubleClick</code> event.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var DOUBLE_CLICK:String = "doubleClick";
+	
+	/**
+	 * Defines the value of the <code>type</code> property of a
+	 * <code>middleClick</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var MIDDLE_CLICK:String = "middleClick";
+	
+	/**
+	 * Defines the value of the <code>type</code> property of a
+	 * <code>middleMouseDown</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var MIDDLE_MOUSE_DOWN:String = "middleMouseDown";
+	
+	/**
+	 * Defines the value of the <code>type</code> property of a
+	 * <code>middleMouseUp</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var MIDDLE_MOUSE_UP:String = "middleMouseUp";
+	
+	/**
+	 * Defines the value of the <code>type</code> property of a
+	 * <code>mouseDown</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var MOUSE_DOWN:String = "mouseDown";
+	
+	/**
+	 * Defines the value of the <code>type</code> property of a
+	 * <code>mouseMove</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var MOUSE_MOVE:String = "mouseMove";
+	
+	/**
+	 * Defines the value of the <code>type</code> property of a
+	 * <code>mouseOut</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var MOUSE_OUT:String = "mouseOut";
+	
+	/**
+	 * Defines the value of the <code>type</code> property of a
+	 * <code>mouseOver</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var MOUSE_OVER:String = "mouseOver";
+	
+	/**
+	 * Defines the value of the <code>type</code> property of a
+	 * <code>mouseUp</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var MOUSE_UP:String = "mouseUp";
+	
+	/**
+	 * Defines the value of the <code>type</code> property of a
+	 * <code>mouseWheel</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var MOUSE_WHEEL:String = "mouseWheel";
+	
+	/**
+	 * Defines the value of the <code>type</code> property of a
+	 * <code>rightClick</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var RIGHT_CLICK:String = "rightClick";
+	
+	/**
+	 * Defines the value of the <code>type</code> property of a
+	 * <code>rightMouseDown</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var RIGHT_MOUSE_DOWN:String = "rightMouseDown";
+	
+	/**
+	 * Defines the value of the <code>type</code> property of a
+	 * <code>rightMouseUp</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var RIGHT_MOUSE_UP:String = "rightMouseUp";
+	
+	/**
+	 * Defines the value of the <code>type</code> property of a
+	 * <code>rollOut</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var ROLL_OUT:String = "rollOut";
+	
+	/**
+	 * Defines the value of the <code>type</code> property of a
+	 * <code>rollOver</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var ROLL_OVER:String = "rollOver";
 
+	@:noCompletion private static var __buttonDown = [ false, false, false ];
+	
+	
 	/**
 	 * Indicates whether the Alt key is active(<code>true</code>) or inactive
 	 * (<code>false</code>). Supported for Windows only. On other operating
 	 * systems, this property is always set to <code>false</code>.
 	 */
-	var altKey : Bool;
-
+	public var altKey:Bool;
+	
 	/**
 	 * Indicates whether the primary mouse button is pressed(<code>true</code>)
 	 * or not(<code>false</code>).
 	 */
-	var buttonDown : Bool;
-
+	public var buttonDown:Bool;
+	public var commandKey:Bool;
+	public var clickCount:Int;
+	
 	/**
 	 * On Windows or Linux, indicates whether the Ctrl key is active
 	 * (<code>true</code>) or inactive(<code>false</code>). On Macintosh,
 	 * indicates whether either the Control key or the Command key is activated.
 	 */
-	var ctrlKey : Bool;
-
+	public var ctrlKey:Bool;
+	
 	/**
 	 * Indicates how many lines should be scrolled for each unit the user rotates
 	 * the mouse wheel. A positive delta value indicates an upward scroll; a
@@ -53,20 +184,20 @@ extern class MouseEvent extends Event {
 	 * device and operating system and is usually configurable by the user. This
 	 * property applies only to the <code>MouseEvent.mouseWheel</code> event.
 	 */
-	var delta : Int;
-
+	public var delta:Int;
+	
 	/**
 	 * The horizontal coordinate at which the event occurred relative to the
 	 * containing sprite.
 	 */
-	var localX : Float;
-
+	public var localX:Float;
+	
 	/**
 	 * The vertical coordinate at which the event occurred relative to the
 	 * containing sprite.
 	 */
-	var localY : Float;
-
+	public var localY:Float;
+	
 	/**
 	 * A reference to a display list object that is related to the event. For
 	 * example, when a <code>mouseOut</code> event occurs,
@@ -81,28 +212,29 @@ extern class MouseEvent extends Event {
 	 * <code>isRelatedObjectInaccessible()</code> property to determine which of
 	 * these reasons applies.</p>
 	 */
-	var relatedObject : openfl.display.InteractiveObject;
-
+	public var relatedObject:InteractiveObject;
+	
 	/**
 	 * Indicates whether the Shift key is active(<code>true</code>) or inactive
 	 * (<code>false</code>).
 	 */
-	var shiftKey : Bool;
-
+	public var shiftKey:Bool;
+	
 	/**
 	 * The horizontal coordinate at which the event occurred in global Stage
 	 * coordinates. This property is calculated when the <code>localX</code>
 	 * property is set.
 	 */
-	var stageX(default,null) : Float;
-
+	public var stageX:Float;
+	
 	/**
 	 * The vertical coordinate at which the event occurred in global Stage
 	 * coordinates. This property is calculated when the <code>localY</code>
 	 * property is set.
 	 */
-	var stageY(default,null) : Float;
-
+	public var stageY:Float;
+	
+	
 	/**
 	 * Creates an Event object that contains information about mouse events.
 	 * Event objects are passed as parameters to event listeners.
@@ -152,145 +284,103 @@ extern class MouseEvent extends Event {
 	 *                      values. This parameter is used only for the
 	 *                      <code>MouseEvent.mouseWheel</code> event.
 	 */
-	function new(type : String, bubbles : Bool = true, cancelable : Bool = false, ?localX : Float, ?localY : Float, ?relatedObject : openfl.display.InteractiveObject, ctrlKey : Bool = false, altKey : Bool = false, shiftKey : Bool = false, buttonDown : Bool = false, delta : Int = 0) : Void;
-
+	public function new (type:String, bubbles:Bool = true, cancelable:Bool = false, localX:Float = 0, localY:Float = 0, relatedObject:InteractiveObject = null, ctrlKey:Bool = false, altKey:Bool = false, shiftKey:Bool = false, buttonDown:Bool = false, delta:Int = 0, commandKey:Bool = false, clickCount:Int = 0) {
+		
+		super (type, bubbles, cancelable);
+		
+		this.shiftKey = shiftKey;
+		this.altKey = altKey;
+		this.ctrlKey = ctrlKey;
+		this.bubbles = bubbles;
+		this.relatedObject = relatedObject;
+		this.delta = delta;
+		this.localX = localX;
+		this.localY = localY;
+		this.buttonDown = buttonDown;
+		this.commandKey = commandKey;
+		this.clickCount = clickCount;
+		
+	}
+	
+	
+	@:noCompletion public static function __create (type:String, button:Int, local:Point, target:InteractiveObject):MouseEvent {
+		
+		var delta = 2;
+		
+		/*if (type == MouseEvent.MOUSE_WHEEL) {
+			
+			var mouseEvent:Dynamic = event;
+			if (mouseEvent.wheelDelta) { // IE/Opera.
+				#if (!haxe_210 && !haxe3)
+				if (js.Lib.isOpera)
+					delta = Std.int (mouseEvent.wheelDelta / 40);
+				else
+				#end
+					delta = Std.int (mouseEvent.wheelDelta / 120);
+			} else if (mouseEvent.detail) { // Mozilla case.
+				
+				Std.int (-mouseEvent.detail);
+				
+			}
+			
+		}*/
+		
+		// source: http://unixpapa.com/js/mouse.html
+		
+		switch (type) {
+			
+			case MouseEvent.MOUSE_DOWN, MouseEvent.MIDDLE_MOUSE_DOWN, MouseEvent.RIGHT_MOUSE_DOWN:
+				
+				__buttonDown[button] = true;
+				
+			case MouseEvent.MOUSE_UP, MouseEvent.MIDDLE_MOUSE_UP, MouseEvent.RIGHT_MOUSE_UP:
+				
+				__buttonDown[button] = false;
+			
+		}
+		
+		var pseudoEvent = new MouseEvent (type, true, false, local.x, local.y, null, false, false, false/*event.ctrlKey, event.altKey, event.shiftKey*/, __buttonDown[button], delta);
+		pseudoEvent.stageX = Lib.current.stage.mouseX;
+		pseudoEvent.stageY = Lib.current.stage.mouseY;
+		pseudoEvent.target = target;
+		
+		return pseudoEvent;
+		
+	}
+	
+	
+	public override function clone ():Event {
+		
+		return new MouseEvent (type, bubbles, cancelable, localX, localY, relatedObject, ctrlKey, altKey, shiftKey, buttonDown, delta, commandKey, clickCount);
+		
+	}
+	
+	
+	public override function toString ():String {
+		
+		return "[MouseEvent type=" + type + " bubbles=" + bubbles + " cancelable=" + cancelable + " localX=" + localX + " localY=" + localY + " relatedObject=" + relatedObject + " ctrlKey=" + ctrlKey + " altKey=" + altKey + " shiftKey=" + shiftKey + " buttonDown=" + buttonDown + " delta=" + delta + "]";
+		
+	}
+	
+	
 	/**
 	 * Instructs Flash Player or Adobe AIR to render after processing of this
 	 * event completes, if the display list has been modified.
 	 * 
 	 */
-	function updateAfterEvent() : Void;
-
-	/**
-	 * Defines the value of the <code>type</code> property of a
-	 * <code>click</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var CLICK : String;
-
-	/**
-	 * Defines the value of the <code>type</code> property of a
-	 * <code>doubleClick</code> event object. The <code>doubleClickEnabled</code>
-	 * property must be <code>true</code> for an object to generate the
-	 * <code>doubleClick</code> event.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var DOUBLE_CLICK : String;
-
-	/**
-	 * Defines the value of the <code>type</code> property of a
-	 * <code>mouseDown</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var MOUSE_DOWN : String;
-
-	/**
-	 * Defines the value of the <code>type</code> property of a
-	 * <code>mouseMove</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var MOUSE_MOVE : String;
-
-	/**
-	 * Defines the value of the <code>type</code> property of a
-	 * <code>mouseOut</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var MOUSE_OUT : String;
-
-	/**
-	 * Defines the value of the <code>type</code> property of a
-	 * <code>mouseOver</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var MOUSE_OVER : String;
-
-	/**
-	 * Defines the value of the <code>type</code> property of a
-	 * <code>mouseUp</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var MOUSE_UP : String;
-
-	/**
-	 * Defines the value of the <code>type</code> property of a
-	 * <code>mouseWheel</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var MOUSE_WHEEL : String;
+	public function updateAfterEvent ():Void {
+		
+		
+		
+	}
 	
-	/**
-	 * Defines the value of the <code>type</code> property of a
-	 * <code>middleClick</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var MIDDLE_CLICK : String;
 	
-	/**
-	 * Defines the value of the <code>type</code> property of a
-	 * <code>middleMouseDown</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var MIDDLE_MOUSE_DOWN : String;
-	
-	/**
-	 * Defines the value of the <code>type</code> property of a
-	 * <code>middleMouseUp</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var MIDDLE_MOUSE_UP : String;
-	
-	/**
-	 * Defines the value of the <code>type</code> property of a
-	 * <code>rightClick</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var RIGHT_CLICK : String;
-	
-	/**
-	 * Defines the value of the <code>type</code> property of a
-	 * <code>rightMouseDown</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var RIGHT_MOUSE_DOWN : String;
-	
-	/**
-	 * Defines the value of the <code>type</code> property of a
-	 * <code>rightMouseUp</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var RIGHT_MOUSE_UP : String;
-
-	/**
-	 * Defines the value of the <code>type</code> property of a
-	 * <code>rollOut</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var ROLL_OUT : String;
-
-	/**
-	 * Defines the value of the <code>type</code> property of a
-	 * <code>rollOver</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var ROLL_OVER : String;
 }
 
 
+#else
+typedef MouseEvent = openfl._v2.events.MouseEvent;
+#end
+#else
+typedef MouseEvent = flash.events.MouseEvent;
 #end

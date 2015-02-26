@@ -1,13 +1,18 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
+package openfl.net; #if !flash #if !lime_legacy
 
-package openfl.net;
-#if display
+
+import haxe.io.Bytes;
+import haxe.Serializer;
+import haxe.Unserializer;
+import openfl.errors.Error;
+import openfl.events.EventDispatcher;
+import openfl.net.SharedObjectFlushStatus;
+import openfl.Lib;
+
+#if js
+import js.html.Storage;
+import js.Browser;
+#end
 
 
 /**
@@ -148,8 +153,9 @@ package openfl.net;
  * @event sync       Dispatched when a remote shared object has been updated
  *                   by the server.
  */
-extern class SharedObject extends openfl.events.EventDispatcher {
-
+class SharedObject extends EventDispatcher {
+	
+	
 	/**
 	 * The collection of attributes assigned to the <code>data</code> property of
 	 * the object; these attributes can be shared and stored. Each attribute can
@@ -163,8 +169,8 @@ extern class SharedObject extends openfl.events.EventDispatcher {
 	 * If one client changes the value of an attribute, all clients now see the
 	 * new value. </p>
 	 */
-	var data(default,null) : Dynamic;
-
+	public var data (default, null):Dynamic;
+	
 	/**
 	 * The current size of the shared object, in bytes.
 	 *
@@ -174,9 +180,18 @@ extern class SharedObject extends openfl.events.EventDispatcher {
 	 * processing time, so you may want to avoid using this method unless you
 	 * have a specific need for it.</p>
 	 */
-	var size(default,null) : UInt;
-	function new() : Void;
+	public var size (get, never):Int;
+	
+	@:noCompletion private var __key:String;
+	
 
+	private function new () {
+		
+		super ();
+		
+	}
+	
+	
 	/**
 	 * For local shared objects, purges all of the data and deletes the shared
 	 * object from the disk. The reference to the shared object is still active,
@@ -189,8 +204,23 @@ extern class SharedObject extends openfl.events.EventDispatcher {
 	 * active, but its data properties are deleted. </p>
 	 * 
 	 */
-	function clear() : Void;
-
+	public function clear ():Void {
+		
+		data = { };
+		
+		#if js
+		try {
+			
+			__getLocalStorage ().removeItem (__key);
+			
+		} catch (e:Dynamic) {}
+		#end
+		
+		flush ();
+		
+	}
+	
+	
 	/**
 	 * Immediately writes a locally persistent shared object to a local file. If
 	 * you don't use this method, Flash Player writes the shared object to a file
@@ -247,36 +277,29 @@ extern class SharedObject extends openfl.events.EventDispatcher {
 	 *               writing of third-party shared objects to disk is
 	 *               disallowed.</p>
 	 */
-	function flush(minDiskSpace : Int = 0) : String;
-
-	/**
-	 * Updates the value of a property in a shared object and indicates to the
-	 * server that the value of the property has changed. The
-	 * <code>setProperty()</code> method explicitly marks properties as changed,
-	 * or dirty.
-	 *
-	 * <p>For more information about remote shared objects see the <a
-	 * href="http://www.adobe.com/go/learn_fms_docs_en"> Flash Media Server
-	 * documentation</a>.</p>
-	 *
-	 * <p><b>Note:</b> The <code>SharedObject.setProperty()</code> method
-	 * implements the <code>setDirty()</code> method. In most cases, such as when
-	 * the value of a property is a primitive type like String or Number, you
-	 * would use <code>setProperty()</code> instead of <code>setDirty</code>.
-	 * However, when the value of a property is an object that contains its own
-	 * properties, use <code>setDirty()</code> to indicate when a value within
-	 * the object has changed. In general, it is a good idea to call
-	 * <code>setProperty()</code> rather than <code>setDirty()</code>, because
-	 * <code>setProperty()</code> updates a property value only when that value
-	 * has changed, whereas <code>setDirty()</code> forces synchronization on all
-	 * subscribed clients.</p>
-	 * 
-	 * @param propertyName The name of the property in the shared object.
-	 * @param value        The value of the property(an ActionScript object), or
-	 *                     <code>null</code> to delete the property.
-	 */
-	function setProperty(propertyName : String, ?value : openfl.utils.Object) : Void;
-
+	public function flush (minDiskSpace:Int = 0):SharedObjectFlushStatus {
+		
+		#if js
+		var data = Serializer.run (data);
+		
+		try {
+			
+			__getLocalStorage ().removeItem (__key);
+			__getLocalStorage ().setItem (__key, data);
+			
+		} catch (e:Dynamic) {
+			
+			// user may have privacy settings which prevent writing
+			return SharedObjectFlushStatus.PENDING;
+			
+		}
+		#end
+		
+		return SharedObjectFlushStatus.FLUSHED;
+		
+	}
+	
+	
 	/**
 	 * Returns a reference to a locally persistent shared object that is only
 	 * available to the current client. If the shared object does not already
@@ -427,8 +450,105 @@ extern class SharedObject extends openfl.events.EventDispatcher {
 	 *               href="http://www.adobe.com/support/documentation/en/flashplayer/help/settings_manager03.html"
 	 *               scope="external">http://www.adobe.com/support/documentation/en/flashplayer/help/settings_manager03.html</a>.
 	 */
-	static function getLocal(name : String, ?localPath : String, secure : Bool = false) : SharedObject;
+	public static function getLocal (name:String, localPath:String = null, secure:Bool = false /* note: unsupported */) {
+		
+		#if js
+		if (localPath == null) {
+			
+			localPath = Browser.window.location.href;
+			
+		}
+		#end
+		
+		var so = new SharedObject ();
+		so.__key = localPath + ":" + name;
+		var rawData = null;
+		
+		#if js
+		try {
+			
+			// user may have privacy settings which prevent reading
+			rawData = __getLocalStorage ().getItem (so.__key);
+			
+		} catch (e:Dynamic) { }
+		#end
+		
+		so.data = { };
+		
+		if (rawData != null && rawData != "") {
+			
+			var unserializer = new Unserializer (rawData);
+			unserializer.setResolver (cast { resolveEnum: Type.resolveEnum, resolveClass: resolveClass } );
+			so.data = unserializer.unserialize ();
+			
+		}
+		
+		if (so.data == null) {
+			
+			so.data = { };
+			
+		}
+		
+		return so;
+		
+	}
+	
+	
+	#if js
+	@:noCompletion private static function __getLocalStorage ():Storage {
+		
+		var res = Browser.getLocalStorage ();
+		if (res == null) throw new Error ("SharedObject not supported");
+		return res;
+		
+	}
+	#end
+	
+	
+	@:noCompletion private static function resolveClass (name:String):Class <Dynamic> {
+		
+		if (name != null) {
+			
+			return Type.resolveClass (StringTools.replace (StringTools.replace (name, "jeash.", "flash."), "browser.", "flash."));
+			
+		}
+		
+		return null;
+		
+	}
+	
+	
+	public function setProperty (propertyName:String, ?value:Dynamic):Void {
+		
+		if (data != null) {
+			
+			Reflect.setField (data, propertyName, value);
+		}
+		
+	}
+	
+	
+	
+	
+	// Getters & Setters
+	
+	
+	
+	
+	@:noCompletion private function get_size ():Int {
+		
+		var d = Serializer.run (data);
+		return Bytes.ofString (d).length;
+		
+	}
+	
+	
 }
 
 
+#else
+typedef SharedObject = openfl._v2.net.SharedObject;
+#end
+#else
+typedef SharedObject = flash.net.SharedObject;
 #end

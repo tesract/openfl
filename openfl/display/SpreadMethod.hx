@@ -1,13 +1,4 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
-
-package openfl.display;
-#if display
+package openfl.display; #if !flash #if !lime_legacy
 
 
 /**
@@ -18,23 +9,29 @@ package openfl.display;
  * <p>The following example shows the same gradient fill using various spread
  * methods:</p>
  */
-@:fakeEnum(String) extern enum SpreadMethod {
-
-	/**
-	 * Specifies that the gradient use the <i>pad</i> spread method.
-	 */
-	PAD;
-
-	/**
-	 * Specifies that the gradient use the <i>reflect</i> spread method.
-	 */
-	REFLECT;
-
+enum SpreadMethod {
+	
 	/**
 	 * Specifies that the gradient use the <i>repeat</i> spread method.
 	 */
 	REPEAT;
+	
+	/**
+	 * Specifies that the gradient use the <i>reflect</i> spread method.
+	 */
+	REFLECT;
+	
+	/**
+	 * Specifies that the gradient use the <i>pad</i> spread method.
+	 */
+	PAD;
+	
 }
 
 
+#else
+typedef SpreadMethod = openfl._v2.display.SpreadMethod;
+#end
+#else
+typedef SpreadMethod = flash.display.SpreadMethod;
 #end

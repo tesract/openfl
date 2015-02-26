@@ -1,13 +1,8 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
+package openfl.ui; #if !flash #if !lime_legacy
 
-package openfl.ui;
-#if display
+
+import lime.ui.Mouse in LimeMouse;
+import openfl.Lib;
 
 
 /**
@@ -17,13 +12,13 @@ package openfl.ui;
  * constructor. <ph outputclass="flashonly">The pointer is visible by default,
  * but you can hide it and implement a custom pointer.
  */
-extern class Mouse {
 
-	/**
-	 * Indicates whether the current configuration supports native cursors.
-	 */
-	//static var supportsNativeCursor(default,null) : Bool;
+@:access(openfl.display.Stage)
 
+
+class Mouse {
+	
+	
 	/**
 	 * Hides the pointer. The pointer is visible by default.
 	 *
@@ -32,8 +27,13 @@ extern class Mouse {
 	 * <code>Mouse.show()</code>.</p>
 	 * 
 	 */
-	static function hide() : Void;
-
+	public static function hide ():Void {
+		
+		LimeMouse.hide ();
+		
+	}
+	
+	
 	/**
 	 * Displays the pointer. The pointer is visible by default.
 	 *
@@ -42,8 +42,19 @@ extern class Mouse {
 	 * <code>Mouse.hide()</code>.</p>
 	 * 
 	 */
-	static function show() : Void;
+	public static function show ():Void {
+		
+		LimeMouse.show ();
+		
+	}
+	
+	
 }
 
 
+#else
+typedef Mouse = openfl._v2.ui.Mouse;
+#end
+#else
+typedef Mouse = flash.ui.Mouse;
 #end

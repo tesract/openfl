@@ -1,12 +1,8 @@
 package openfl.utils;
-#if display
 
 
-extern class ArrayBufferView {
-	
-	
-	
-}
-
-
+#if !lime_legacy
+typedef ArrayBufferView = lime.utils.ArrayBufferView;
+#else
+typedef ArrayBufferView = openfl._v2.utils.ArrayBufferView;
 #end

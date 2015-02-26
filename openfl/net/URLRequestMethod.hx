@@ -1,13 +1,4 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
-
-package openfl.net;
-#if display
+package openfl.net; #if !flash #if !lime_legacy
 
 
 /**
@@ -15,28 +6,28 @@ package openfl.net;
  * URLRequest object should use the <code>POST</code> method or the
  * <code>GET</code> method when sending data to a server.
  */
-extern class URLRequestMethod {
-
+class URLRequestMethod {
+	
 	/**
 	 * Specifies that the URLRequest object is a <code>DELETE</code>.
 	 */
-	static var DELETE : String;
-
+	public static var DELETE:String = "DELETE";
+	
 	/**
 	 * Specifies that the URLRequest object is a <code>GET</code>.
 	 */
-	static var GET : String;
-
+	public static var GET:String = "GET";
+	
 	/**
 	 * Specifies that the URLRequest object is a <code>HEAD</code>.
 	 */
-	static var HEAD : String;
-
+	public static var HEAD:String = "HEAD";
+	
 	/**
 	 * Specifies that the URLRequest object is <code>OPTIONS</code>.
 	 */
-	static var OPTIONS : String;
-
+	public static var OPTIONS:String = "OPTIONS";
+	
 	/**
 	 * Specifies that the URLRequest object is a <code>POST</code>.
 	 *
@@ -45,13 +36,19 @@ extern class URLRequestMethod {
 	 * that uses the POST method(one that has its <code>method</code> property
 	 * set to <code>URLRequestMethod.POST</code>) as using the GET method.</p>
 	 */
-	static var POST : String;
-
+	public static var POST:String = "POST";
+	
 	/**
 	 * Specifies that the URLRequest object is a <code>PUT</code>.
 	 */
-	static var PUT : String;
+	public static var PUT:String = "PUT";
+	
 }
 
 
+#else
+typedef URLRequestMethod = openfl._v2.net.URLRequestMethod;
+#end
+#else
+typedef URLRequestMethod = flash.net.URLRequestMethod;
 #end

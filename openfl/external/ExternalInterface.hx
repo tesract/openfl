@@ -1,13 +1,7 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
+package openfl.external; #if !flash #if !lime_legacy
 
-package openfl.external;
-#if display
+
+import openfl.Lib;
 
 
 /**
@@ -78,8 +72,14 @@ package openfl.external;
  * in the HTMLLoader control and ActionScript in SWF content embedded in that
  * HTML page.</p>
  */
-extern class ExternalInterface {
 
+@:access(openfl.display.Stage)
+@:access(lime.ui.Window)
+
+
+class ExternalInterface {
+	
+	
 	/**
 	 * Indicates whether this player is in a container that offers an external
 	 * interface. If the external interface is available, this property is
@@ -89,8 +89,8 @@ extern class ExternalInterface {
 	 * the HTML has finished loading before you attempt to call any JavaScript
 	 * methods.</p>
 	 */
-	static var available(default,null) : Bool;
-
+	public static var available = true;
+	
 	/**
 	 * Indicates whether the external interface should attempt to pass
 	 * ActionScript exceptions to the current browser and JavaScript exceptions
@@ -98,15 +98,16 @@ extern class ExternalInterface {
 	 * to catch JavaScript exceptions in ActionScript and to catch ActionScript
 	 * exceptions in JavaScript.
 	 */
-	static var marshallExceptions : Bool;
-
+	public static var marshallExceptions = false;
+	
 	/**
 	 * Returns the <code>id</code> attribute of the <code>object</code> tag in
 	 * Internet Explorer, or the <code>name</code> attribute of the
 	 * <code>embed</code> tag in Netscape.
 	 */
-	static var objectID(default,null) : String;
-
+	public static var objectID:String;
+	
+	
 	/**
 	 * Registers an ActionScript method as callable from the container. After a
 	 * successful invocation of <code>addCallBack()</code>, the registered
@@ -160,12 +161,23 @@ extern class ExternalInterface {
 	 *                       ActionScript:
 	 *
 	 *
-	 *                       <p><code>openfl.system.Security.allowDomain(<i>sourceDomain</i>)</code></p>
+	 *                       <p><code>flash.system.Security.allowDomain(<i>sourceDomain</i>)</code></p>
 	 *                       </li>
 	 *                       </ol>
 	 */
-	static function addCallback(functionName : String, closure : Dynamic) : Void;
-
+	public static function addCallback (functionName:String, closure:Dynamic):Void {
+		
+		#if js
+		if (Lib.application.window.backend.element != null) {
+			
+			untyped Lib.application.window.backend.element[functionName] = closure;
+			
+		}
+		#end
+		
+	}
+	
+	
 	/**
 	 * Calls a function exposed by the SWF container, passing zero or more
 	 * arguments. If the function is not available, the call returns
@@ -233,12 +245,60 @@ extern class ExternalInterface {
 	 *                       ActionScript:
 	 *
 	 *
-	 *                       <p><code>openfl.system.Security.allowDomain(<i>sourceDomain</i>)</code></p>
+	 *                       <p><code>flash.system.Security.allowDomain(<i>sourceDomain</i>)</code></p>
 	 *                       </li>
 	 *                       </ol>
 	 */
-	static function call(functionName : String, ?p1 : Dynamic, ?p2 : Dynamic, ?p3 : Dynamic, ?p4 : Dynamic, ?p5 : Dynamic) : Dynamic;
+	public static function call (functionName:String, ?p1:Dynamic, ?p2:Dynamic, ?p3:Dynamic, ?p4:Dynamic, ?p5:Dynamic):Dynamic {
+		
+		#if js
+		var callResponse:Dynamic = null;
+		
+		var thisArg = functionName.split('.').slice(0, -1).join('.');
+		if (thisArg.length > 0) {
+			functionName += '.bind(${thisArg})';
+		}
+		
+		if (p1 == null) {
+			
+			callResponse = js.Lib.eval (functionName) ();
+			
+		} else if (p2 == null) {
+			
+			callResponse = js.Lib.eval (functionName) (p1);
+			
+		} else if (p3 == null) {
+			
+			callResponse = js.Lib.eval (functionName) (p1, p2);
+			
+		} else if (p4 == null) {
+			
+			callResponse = js.Lib.eval (functionName) (p1, p2, p3);
+			
+		} else if (p5 == null) {
+			
+			callResponse = js.Lib.eval (functionName) (p1, p2, p3, p4);
+			
+		} else {
+			
+			callResponse = js.Lib.eval (functionName) (p1, p2, p3, p4, p5);
+			
+		}
+		
+		return callResponse;
+		#else
+		return null;
+		#end
+		
+	}
+	
+	
 }
 
 
+#else
+typedef ExternalInterface = openfl._v2.external.ExternalInterface;
+#end
+#else
+typedef ExternalInterface = flash.external.ExternalInterface;
 #end

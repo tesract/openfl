@@ -1,13 +1,4 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
-
-package openfl.filters;
-#if display
+package openfl.filters; #if !flash #if !lime_legacy
 
 
 /**
@@ -60,22 +51,23 @@ package openfl.filters;
  * filter is turned off if the resulting image exceeds the maximum
  * dimensions.</p>
  */
-@:final extern class BlurFilter extends BitmapFilter {
-
+class BlurFilter extends BitmapFilter {
+	
+	
 	/**
 	 * The amount of horizontal blur. Valid values are from 0 to 255(floating
 	 * point). The default value is 4. Values that are a power of 2(such as 2,
 	 * 4, 8, 16 and 32) are optimized to render more quickly than other values.
 	 */
-	var blurX : Float;
-
+	public var blurX:Float;
+	
 	/**
 	 * The amount of vertical blur. Valid values are from 0 to 255(floating
 	 * point). The default value is 4. Values that are a power of 2(such as 2,
 	 * 4, 8, 16 and 32) are optimized to render more quickly than other values.
 	 */
-	var blurY : Float;
-
+	public var blurY:Float;
+	
 	/**
 	 * The number of times to perform the blur. The default value is
 	 * <code>BitmapFilterQuality.LOW</code>, which is equivalent to applying the
@@ -101,8 +93,9 @@ package openfl.filters;
 	 *   <li><code>BitmapFilterQuality.HIGH</code></li>
 	 * </ul>
 	 */
-	var quality : Int;
-
+	public var quality:Int;
+	
+	
 	/**
 	 * Initializes the filter with the specified parameters. The default values
 	 * create a soft, unfocused image.
@@ -115,11 +108,11 @@ package openfl.filters;
 	 *                the quality using the BitmapFilterQuality constants:
 	 *                <ul>
 	 *
-	 *                <li><code>openfl.filters.BitmapFilterQuality.LOW</code></li>
+	 *                <li><code>flash.filters.BitmapFilterQuality.LOW</code></li>
 	 *
-	 *                <li><code>openfl.filters.BitmapFilterQuality.MEDIUM</code></li>
+	 *                <li><code>flash.filters.BitmapFilterQuality.MEDIUM</code></li>
 	 *
-	 *                <li><code>openfl.filters.BitmapFilterQuality.HIGH</code></li>
+	 *                <li><code>flash.filters.BitmapFilterQuality.HIGH</code></li>
 	 *                </ul>
 	 *
 	 *                <p>High quality approximates a Gaussian blur. For most
@@ -128,8 +121,30 @@ package openfl.filters;
 	 *                different effects, be aware that higher values are rendered
 	 *                more slowly.</p>
 	 */
-	function new(blurX : Float = 4, blurY : Float = 4, quality : Int = 1) : Void;
+	public function new (blurX:Float = 4, blurY:Float = 4, quality:Int = 1) {
+		
+		super ();
+		
+		this.blurX = blurX;
+		this.blurY = blurY;
+		this.quality = quality;
+		
+	}
+	
+	
+	public override function clone ():BitmapFilter {
+		
+		return new BlurFilter (blurX, blurY, quality);
+		
+	}
+	
+	
 }
 
 
+#else
+typedef BlurFilter = openfl._v2.filters.BlurFilter;
+#end
+#else
+typedef BlurFilter = flash.filters.BlurFilter;
 #end

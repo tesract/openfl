@@ -1,13 +1,4 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
-
-package openfl.events;
-#if display
+package openfl.events; #if !flash
 
 
 /**
@@ -29,15 +20,26 @@ package openfl.events;
  * Player or the AIR Debug Launcher(ADL) application.</p>
  * 
  */
-extern class ErrorEvent extends TextEvent {
-
+class ErrorEvent extends TextEvent {
+	
+	
+	/**
+	 * Defines the value of the <code>type</code> property of an
+	 * <code>error</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var ERROR:String = "error";
+	
+	
 	/**
 	 * Contains the reference number associated with the specific error. For a
 	 * custom ErrorEvent object, this number is the value from the
 	 * <code>id</code> parameter supplied in the constructor.
 	 */
-	var errorID(default,null) : Int;
-
+	public var errorID (default, null):Int;
+	
+	
 	/**
 	 * Creates an Event object that contains information about error events.
 	 * Event objects are passed as parameters to event listeners.
@@ -58,16 +60,31 @@ extern class ErrorEvent extends TextEvent {
 	 * @param id         A reference number to associate with the specific error
 	 *                  (supported in Adobe AIR only).
 	 */
-	function new(type : String, bubbles : Bool = false, cancelable : Bool = false, ?text : String, id : Int = 0) : Void;
-
-	/**
-	 * Defines the value of the <code>type</code> property of an
-	 * <code>error</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var ERROR : String;
+	public function new (type:String, bubbles:Bool = false, cancelable:Bool = false, text:String = "", id:Int = 0):Void {
+		
+		super (type, bubbles, cancelable, text);
+		errorID = id;
+		
+	}
+	
+	
+	public override function clone ():Event {
+		
+		return new ErrorEvent (type, bubbles, cancelable, text, errorID);
+		
+	}
+	
+	
+	public override function toString ():String {
+		
+		return "[ErrorEvent type=" + type + " bubbles=" + bubbles + " cancelable=" + cancelable + " text=" + text + " errorID=" + errorID + "]";
+		
+	}
+	
+	
 }
 
 
+#else
+typedef ErrorEvent = flash.events.ErrorEvent;
 #end

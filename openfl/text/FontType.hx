@@ -1,13 +1,4 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
-
-package openfl.text;
-#if display
+package openfl.text; #if !flash #if !lime_legacy
 
 
 /**
@@ -15,8 +6,8 @@ package openfl.text;
  * <code>"embedded"</code> and <code>"device"</code> for the
  * <code>fontType</code> property of the Font class.
  */
-@:fakeEnum(String) extern enum FontType {
-
+enum FontType {
+	
 	/**
 	 * Indicates that this is a device font. The SWF file renders fonts with
 	 * those installed on the system.
@@ -33,7 +24,7 @@ package openfl.text;
 	 * anti-aliased and may appear jagged at large point sizes.</p>
 	 */
 	DEVICE;
-
+	
 	/**
 	 * Indicates that this is an embedded font. Font outlines are embedded in the
 	 * published SWF file.
@@ -48,12 +39,18 @@ package openfl.text;
 	 * SWF file.</p>
 	 *
 	 * <p>Fonts of type <code>EMBEDDED</code> can only be used by TextField. If
-	 * openfl.text.engine classes are directed to use such a font they will fall
+	 * flash.text.engine classes are directed to use such a font they will fall
 	 * back to device fonts.</p>
 	 */
 	EMBEDDED;
 	EMBEDDED_CFF;
+	
 }
 
 
+#else
+typedef FontType = openfl._v2.text.FontType;
+#end
+#else
+typedef FontType = flash.text.FontType;
 #end

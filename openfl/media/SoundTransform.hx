@@ -1,56 +1,49 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
-
-package openfl.media;
-#if display
+package openfl.media; #if !flash
 
 
 /**
  * The SoundTransform class contains properties for volume and panning.
  */
-@:final extern class SoundTransform {
-
+class SoundTransform {
+	
+	
 	/**
 	 * A value, from 0(none) to 1(all), specifying how much of the left input
 	 * is played in the left speaker.
 	 */
-	var leftToLeft : Float;
-
+	public var leftToLeft:Float;
+	
 	/**
 	 * A value, from 0(none) to 1(all), specifying how much of the left input
 	 * is played in the right speaker.
 	 */
-	var leftToRight : Float;
-
+	public var leftToRight:Float;
+	
 	/**
 	 * The left-to-right panning of the sound, ranging from -1(full pan left) to
 	 * 1(full pan right). A value of 0 represents no panning(balanced center
 	 * between right and left).
 	 */
-	var pan : Float;
-
+	public var pan:Float;
+	
 	/**
 	 * A value, from 0(none) to 1(all), specifying how much of the right input
 	 * is played in the left speaker.
 	 */
-	var rightToLeft : Float;
-
+	public var rightToLeft:Float;
+	
 	/**
 	 * A value, from 0(none) to 1(all), specifying how much of the right input
 	 * is played in the right speaker.
 	 */
-	var rightToRight : Float;
-
+	public var rightToRight:Float;
+	
 	/**
 	 * The volume, ranging from 0(silent) to 1(full volume).
 	 */
-	var volume : Float;
-
+	public var volume:Float;
+	
+	
 	/**
 	 * Creates a SoundTransform object.
 	 * 
@@ -59,8 +52,28 @@ package openfl.media;
 	 *               (full pan left) to 1(full pan right). A value of 0
 	 *                represents no panning(center).
 	 */
-	function new(vol : Float = 1, panning : Float = 0) : Void;
+	public function new (vol:Float = 1, panning:Float = 0):Void {
+		
+		volume = vol;
+		pan = panning;
+		leftToLeft = 0;
+		leftToRight = 0;
+		rightToLeft = 0;
+		rightToRight = 0;
+		
+	}
+	
+	
+	public function clone ():SoundTransform {
+		
+		return new SoundTransform (volume, pan);
+		
+	}
+	
+	
 }
 
 
+#else
+typedef SoundTransform = flash.media.SoundTransform;
 #end

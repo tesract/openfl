@@ -1,36 +1,32 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
-
-package openfl.filters;
-#if display
+package openfl.filters; #if !flash
 
 
 /**
  * The BitmapFilterType class contains values to set the type of a
  * BitmapFilter.
  */
-@:fakeEnum(String) extern enum BitmapFilterType {
-
+class BitmapFilterType {
+	
+	
 	/**
 	 * Defines the setting that applies a filter to the entire area of an object.
 	 */
-	FULL;
-
+	public static var FULL = "full";
+	
 	/**
 	 * Defines the setting that applies a filter to the inner area of an object.
 	 */
-	INNER;
-
+	public static var INNER = "inner";
+	
 	/**
 	 * Defines the setting that applies a filter to the outer area of an object.
 	 */
-	OUTER;
+	public static var OUTER = "outer";
+	
+	
 }
 
 
+#else
+typedef BitmapFilterType = flash.filters.BitmapFilterType;
 #end

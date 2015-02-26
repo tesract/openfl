@@ -1,13 +1,4 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
-
-package openfl.events;
-#if display
+package openfl.events; #if !flash #if !lime_legacy
 
 
 /**
@@ -29,20 +20,47 @@ package openfl.events;
  * event.</p>
  * 
  */
-extern class HTTPStatusEvent extends Event {
-
+class HTTPStatusEvent extends Event {
+	
+	
+	/**
+	 * Unlike the <code>httpStatus</code> event, the
+	 * <code>httpResponseStatus</code> event is delivered before any response
+	 * data. Also, the <code>httpResponseStatus</code> event includes values for
+	 * the <code>responseHeaders</code> and <code>responseURL</code> properties
+	 * (which are undefined for an <code>httpStatus</code> event. Note that the
+	 * <code>httpResponseStatus</code> event(if any) will be sent before(and in
+	 * addition to) any <code>complete</code> or <code>error</code> event.
+	 *
+	 * <p>The <code>HTTPStatusEvent.HTTP_RESPONSE_STATUS</code> constant defines
+	 * the value of the <code>type</code> property of a
+	 * <code>httpResponseStatus</code> event object. </p>
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var HTTP_RESPONSE_STATUS:String = "httpResponseStatus";
+	
+	/**
+	 * The <code>HTTPStatusEvent.HTTP_STATUS</code> constant defines the value of
+	 * the <code>type</code> property of a <code>httpStatus</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var HTTP_STATUS:String = "httpStatus";
+	
+	
 	/**
 	 * The response headers that the response returned, as an array of
 	 * URLRequestHeader objects.
 	 */
-	var responseHeaders : Array<Dynamic>;
-
+	public var responseHeaders:Array<Dynamic>;
+	
 	/**
 	 * The URL that the response was returned from. In the case of redirects,
 	 * this will be different from the request URL.
 	 */
-	var responseURL : String;
-
+	public var responseURL:String;
+	
 	/**
 	 * The HTTP status code returned by the server. For example, a value of 404
 	 * indicates that the server has not found a match for the requested URI.
@@ -60,8 +78,9 @@ extern class HTTPStatusEvent extends Event {
 	 * not pass HTTP status codes to the player: Netscape, Mozilla, Safari,
 	 * Opera, and Internet Explorer for the Macintosh.</p>
 	 */
-	var status(default,null) : Int;
-
+	public var status (default, null):Int;
+	
+	
 	/**
 	 * Creates an Event object that contains specific information about HTTP
 	 * status events. Event objects are passed as parameters to event listeners.
@@ -80,33 +99,21 @@ extern class HTTPStatusEvent extends Event {
 	 * @param status     Numeric status. Event listeners can access this
 	 *                   information through the <code>status</code> property.
 	 */
-	function new(type : String, bubbles : Bool = false, cancelable : Bool = false, status : Int = 0) : Void;
-
-	/**
-	 * Unlike the <code>httpStatus</code> event, the
-	 * <code>httpResponseStatus</code> event is delivered before any response
-	 * data. Also, the <code>httpResponseStatus</code> event includes values for
-	 * the <code>responseHeaders</code> and <code>responseURL</code> properties
-	 * (which are undefined for an <code>httpStatus</code> event. Note that the
-	 * <code>httpResponseStatus</code> event(if any) will be sent before(and in
-	 * addition to) any <code>complete</code> or <code>error</code> event.
-	 *
-	 * <p>The <code>HTTPStatusEvent.HTTP_RESPONSE_STATUS</code> constant defines
-	 * the value of the <code>type</code> property of a
-	 * <code>httpResponseStatus</code> event object. </p>
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var HTTP_RESPONSE_STATUS : String;
-
-	/**
-	 * The <code>HTTPStatusEvent.HTTP_STATUS</code> constant defines the value of
-	 * the <code>type</code> property of a <code>httpStatus</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var HTTP_STATUS : String;
+	public function new (type:String, bubbles:Bool = false, cancelable:Bool = false, status:Int = 0):Void {
+		
+		this.status = status;
+		
+		super (type, bubbles, cancelable);
+		
+	}
+	
+	
 }
 
 
+#else
+typedef HTTPStatusEvent = openfl._v2.events.HTTPStatusEvent;
+#end
+#else
+typedef HTTPStatusEvent = flash.events.HTTPStatusEvent;
 #end

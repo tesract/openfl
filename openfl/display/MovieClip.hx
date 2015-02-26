@@ -1,13 +1,4 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
-
-package openfl.display;
-#if display
+package openfl.display; #if !flash #if !lime_legacy
 
 
 /**
@@ -45,22 +36,23 @@ package openfl.display;
  * MovieClip.opaqueBackground property for a suitable device, define
  * FEATURE_BITMAPCACHE in your project.</p>
  */
-extern class MovieClip extends Sprite {
-
+class MovieClip extends Sprite {
+	
+	
 	/**
 	 * Specifies the number of the frame in which the playhead is located in the
 	 * timeline of the MovieClip instance. If the movie clip has multiple scenes,
 	 * this value is the frame number in the current scene.
 	 */
-	var currentFrame(default,null) : Int;
-
+	public var currentFrame (get, null):Int;
+	
 	/**
 	 * The label at the current frame in the timeline of the MovieClip instance.
 	 * If the current frame has no label, <code>currentLabel</code> is
 	 * <code>null</code>.
 	 */
-	var currentFrameLabel(default,null) : String;
-
+	public var currentFrameLabel (get, null):String;
+	
 	/**
 	 * The current label in which the playhead is located in the timeline of the
 	 * MovieClip instance. If the current frame has no label,
@@ -68,8 +60,15 @@ extern class MovieClip extends Sprite {
 	 * includes a label. If the current frame and previous frames do not include
 	 * a label, <code>currentLabel</code> returns <code>null</code>.
 	 */
-	var currentLabel(default,null) : String;
-
+	public var currentLabel (get, null):String;
+	
+	/**
+	 * Returns an array of FrameLabel objects from the current scene. If the
+	 * MovieClip instance does not use scenes, the array includes all frame
+	 * labels from the entire MovieClip instance.
+	 */
+	public var currentLabels (get, null):Array<FrameLabel>;
+	
 	/**
 	 * A Boolean value that indicates whether a movie clip is enabled. The
 	 * default value of <code>enabled</code> is <code>true</code>. If
@@ -84,8 +83,8 @@ extern class MovieClip extends Sprite {
 	 * disabled. If <code>enabled</code> is set to <code>false</code>, the object
 	 * is not included in automatic tab ordering.</p>
 	 */
-	var enabled : Bool;
-
+	public var enabled:Bool;
+	
 	/**
 	 * The number of frames that are loaded from a streaming SWF file. You can
 	 * use the <code>framesLoaded</code> property to determine whether the
@@ -99,8 +98,8 @@ extern class MovieClip extends Sprite {
 	 * <code>framesLoaded</code> property returns the number of frames loaded for
 	 * <i>all</i> scenes in the movie clip.</p>
 	 */
-	var framesLoaded(default,null) : Int;
-
+	public var framesLoaded (get, null):Int;
+	
 	/**
 	 * The total number of frames in the MovieClip instance.
 	 *
@@ -108,15 +107,32 @@ extern class MovieClip extends Sprite {
 	 * <code>totalFrames</code> property returns the total number of frames in
 	 * <i>all</i> scenes in the movie clip.</p>
 	 */
-	var totalFrames(default,null) : Int;
-
+	public var totalFrames (get, null):Int;
+	
+	@:noCompletion private var __currentFrame:Int;
+	@:noCompletion private var __currentFrameLabel:String;
+	@:noCompletion private var __currentLabel:String;
+	@:noCompletion private var __currentLabels:Array<FrameLabel>;
+	@:noCompletion private var __totalFrames:Int;
+	
+	
 	/**
 	 * Creates a new MovieClip instance. After creating the MovieClip, call the
 	 * <code>addChild()</code> or <code>addChildAt()</code> method of a display
 	 * object container that is onstage.
 	 */
-	function new() : Void;
-
+	public function new () {
+		
+		super ();
+		
+		__currentFrame = 0;
+		__currentLabels = [];
+		__totalFrames = 0;
+		enabled = true;
+		
+	}
+	
+	
 	/**
 	 * Starts playing the SWF file at the specified frame. This happens after all
 	 * remaining actions in the frame have finished executing. To specify a scene
@@ -131,8 +147,13 @@ extern class MovieClip extends Sprite {
 	 *              specified scene.
 	 * @param scene The name of the scene to play. This parameter is optional.
 	 */
-	function gotoAndPlay(frame : openfl.utils.Object, ?scene : String) : Void;
-
+	public function gotoAndPlay (frame:Dynamic, scene:String = null):Void {
+		
+		
+		
+	}
+	
+	
 	/**
 	 * Brings the playhead to the specified frame of the movie clip and stops it
 	 * there. This happens after all remaining actions in the frame have finished
@@ -150,48 +171,80 @@ extern class MovieClip extends Sprite {
 	 * @throws ArgumentError If the <code>scene</code> or <code>frame</code>
 	 *                       specified are not found in this movie clip.
 	 */
-	function gotoAndStop(frame : openfl.utils.Object, ?scene : String) : Void;
-
+	public function gotoAndStop (frame:Dynamic, scene:String = null):Void {
+		
+		
+		
+	}
+	
+	
 	/**
 	 * Sends the playhead to the next frame and stops it. This happens after all
 	 * remaining actions in the frame have finished executing.
 	 * 
 	 */
-	function nextFrame() : Void;
-
-	/**
-	 * Moves the playhead to the next scene of the MovieClip instance. This
-	 * happens after all remaining actions in the frame have finished executing.
-	 * 
-	 */
-	function nextScene() : Void;
-
+	public function nextFrame ():Void {
+		
+		
+		
+	}
+	
+	
 	/**
 	 * Moves the playhead in the timeline of the movie clip.
 	 * 
 	 */
-	function play() : Void;
-
+	public function play ():Void {
+		
+		
+		
+	}
+	
+	
 	/**
 	 * Sends the playhead to the previous frame and stops it. This happens after
 	 * all remaining actions in the frame have finished executing.
 	 * 
 	 */
-	function prevFrame() : Void;
-
-	/**
-	 * Moves the playhead to the previous scene of the MovieClip instance. This
-	 * happens after all remaining actions in the frame have finished executing.
-	 * 
-	 */
-	function prevScene() : Void;
-
+	public function prevFrame ():Void {
+		
+		
+		
+	}
+	
+	
 	/**
 	 * Stops the playhead in the movie clip.
 	 * 
 	 */
-	function stop() : Void;
+	public function stop ():Void {
+		
+		
+		
+	}
+	
+	
+	
+	
+	// Getters & Setters
+	
+	
+	
+	
+	@:noCompletion private function get_currentFrame ():Int { return __currentFrame; }
+	@:noCompletion private function get_currentFrameLabel ():String { return __currentFrameLabel; }
+	@:noCompletion private function get_currentLabel ():String { return __currentLabel; }
+	@:noCompletion private function get_currentLabels ():Array<FrameLabel> { return __currentLabels; }
+	@:noCompletion private function get_framesLoaded ():Int { return __totalFrames; }
+	@:noCompletion private function get_totalFrames ():Int { return __totalFrames; }
+	
+	
 }
 
 
+#else
+typedef MovieClip = openfl._v2.display.MovieClip;
+#end
+#else
+typedef MovieClip = flash.display.MovieClip;
 #end

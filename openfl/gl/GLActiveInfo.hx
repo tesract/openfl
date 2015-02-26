@@ -1,14 +1,8 @@
 package openfl.gl;
-#if display
 
 
-typedef GLActiveInfo = {
-	
-    size : Int,
-    type : Int,
-    name : String,
-	
-};
-
-
+#if lime_legacy
+typedef GLActiveInfo = openfl._v2.gl.GLActiveInfo;
+#else
+typedef GLActiveInfo = lime.graphics.opengl.GLActiveInfo;
 #end

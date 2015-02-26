@@ -1,13 +1,4 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
-
-package openfl.utils;
-#if display
+package openfl.utils; #if !flash
 
 
 /**
@@ -24,10 +15,16 @@ package openfl.utils;
  * order that matches the protocol of the server that is sending or receiving
  * data.</p>
  */
-@:fakeEnum(String) extern enum Endian {
-	BIG_ENDIAN;
-	LITTLE_ENDIAN;
+class Endian {
+	
+	
+	public static inline var BIG_ENDIAN:String = "bigEndian";
+	public static inline var LITTLE_ENDIAN:String = "littleEndian";
+	
+	
 }
 
 
+#else
+typedef Endian = flash.utils.Endian;
 #end

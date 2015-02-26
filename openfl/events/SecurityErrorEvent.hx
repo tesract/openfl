@@ -1,13 +1,4 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
-
-package openfl.events;
-#if display
+package openfl.events; #if !flash
 
 
 /**
@@ -28,8 +19,19 @@ package openfl.events;
  * error.</p>
  * 
  */
-extern class SecurityErrorEvent extends ErrorEvent {
-
+class SecurityErrorEvent extends ErrorEvent {
+	
+	
+	/**
+	 * The <code>SecurityErrorEvent.SECURITY_ERROR</code> constant defines the
+	 * value of the <code>type</code> property of a <code>securityError</code>
+	 * event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	static public var SECURITY_ERROR:String = "securityError";
+	
+	
 	/**
 	 * Creates an Event object that contains information about security error
 	 * events. Event objects are passed as parameters to event listeners.
@@ -50,17 +52,30 @@ extern class SecurityErrorEvent extends ErrorEvent {
 	 *                   <code>text</code> property.
 	 * @param id         A reference number to associate with the specific error.
 	 */
-	function new(type : String, bubbles : Bool = false, cancelable : Bool = false, ?text : String, id : Int = 0) : Void;
-
-	/**
-	 * The <code>SecurityErrorEvent.SECURITY_ERROR</code> constant defines the
-	 * value of the <code>type</code> property of a <code>securityError</code>
-	 * event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var SECURITY_ERROR : String;
+	public function new (type:String, bubbles:Bool = false, cancelable:Bool = false, text:String = "", id:Int = 0) {
+		
+		super (type, bubbles, cancelable, text, id);
+		
+	}
+	
+	
+	public override function clone ():Event {
+		
+		return new SecurityErrorEvent (type, bubbles, cancelable, text, errorID);
+		
+	}
+	
+	
+	public override function toString ():String {
+		
+		return "[SecurityErrorEvent type=" + type + " bubbles=" + bubbles + " cancelable=" + cancelable + " text=" + text + " errorID=" + errorID + "]";
+		
+	}
+	
+	
 }
 
 
+#else
+typedef SecurityErrorEvent = flash.events.SecurityErrorEvent;
 #end

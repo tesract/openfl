@@ -1,13 +1,4 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
-
-package openfl.filters;
-#if display
+package openfl.filters; #if !flash #if !lime_legacy
 
 
 /**
@@ -55,67 +46,68 @@ package openfl.filters;
  * filter is turned off if the resulting image exceeds the maximum
  * dimensions.</p>
  */
-@:final extern class DropShadowFilter extends BitmapFilter {
-
+class DropShadowFilter extends BitmapFilter {
+	
+	
 	/**
 	 * The alpha transparency value for the shadow color. Valid values are 0.0 to
 	 * 1.0. For example, .25 sets a transparency value of 25%. The default value
 	 * is 1.0.
 	 */
-	var alpha : Float;
-
+	public var alpha:Float;
+	
 	/**
 	 * The angle of the shadow. Valid values are 0 to 360 degrees(floating
 	 * point). The default value is 45.
 	 */
-	var angle : Float;
-
+	public var angle:Float;
+	
 	/**
 	 * The amount of horizontal blur. Valid values are 0 to 255.0(floating
 	 * point). The default value is 4.0.
 	 */
-	var blurX : Float;
-
+	public var blurX:Float;
+	
 	/**
 	 * The amount of vertical blur. Valid values are 0 to 255.0(floating point).
 	 * The default value is 4.0.
 	 */
-	var blurY : Float;
-
+	public var blurY:Float;
+	
 	/**
 	 * The color of the shadow. Valid values are in hexadecimal format
 	 * <i>0xRRGGBB</i>. The default value is 0x000000.
 	 */
-	var color : UInt;
-
+	public var color:Int;
+	
 	/**
 	 * The offset distance for the shadow, in pixels. The default value is 4.0
 	 * (floating point).
 	 */
-	var distance : Float;
-
+	public var distance:Float;
+	
 	/**
 	 * Indicates whether or not the object is hidden. The value <code>true</code>
 	 * indicates that the object itself is not drawn; only the shadow is visible.
 	 * The default is <code>false</code>(the object is shown).
 	 */
-	var hideObject : Bool;
-
+	public var hideObject:Bool;
+	
 	/**
 	 * Indicates whether or not the shadow is an inner shadow. The value
 	 * <code>true</code> indicates an inner shadow. The default is
 	 * <code>false</code>, an outer shadow(a shadow around the outer edges of
 	 * the object).
 	 */
-	var inner : Bool;
-
+	public var inner:Bool;
+	
 	/**
 	 * Applies a knockout effect(<code>true</code>), which effectively makes the
 	 * object's fill transparent and reveals the background color of the
 	 * document. The default is <code>false</code>(no knockout).
 	 */
-	var knockout : Bool;
-
+	public var knockout:Bool;
+	
 	/**
 	 * The number of times to apply the filter. The default value is
 	 * <code>BitmapFilterQuality.LOW</code>, which is equivalent to applying the
@@ -130,15 +122,16 @@ package openfl.filters;
 	 * similar effect, and with faster rendering, by simply increasing the values
 	 * of the <code>blurX</code> and <code>blurY</code> properties.</p>
 	 */
-	var quality : Int;
-
+	public var quality:Int;
+	
 	/**
 	 * The strength of the imprint or spread. The higher the value, the more
 	 * color is imprinted and the stronger the contrast between the shadow and
 	 * the background. Valid values are from 0 to 255.0. The default is 1.0.
 	 */
-	var strength : Float;
-
+	public var strength:Float;
+	
+	
 	/**
 	 * Creates a new DropShadowFilter instance with the specified parameters.
 	 * 
@@ -178,8 +171,38 @@ package openfl.filters;
 	 *                   of <code>true</code> indicates that the object itself is
 	 *                   not drawn; only the shadow is visible.
 	 */
-	function new(distance : Float = 4, angle : Float = 45, color : UInt = 0, alpha : Float = 1, blurX : Float = 4, blurY : Float = 4, strength : Float = 1, quality : Int = 1, inner : Bool = false, knockout : Bool = false, hideObject : Bool = false) : Void;
+	public function new (distance:Float = 4, angle:Float = 45, color:Int = 0, alpha:Float = 1, blurX:Float = 4, blurY:Float = 4, strength:Float = 1, quality:Int = 1, inner:Bool = false, knockout:Bool = false, hideObject:Bool = false) {
+		
+		super ();
+		
+		this.distance = distance;
+		this.angle = angle;
+		this.color = color;
+		this.alpha = alpha;
+		this.blurX = blurX;
+		this.blurY = blurY;
+		this.strength = strength;
+		this.quality = quality;
+		this.inner = inner;
+		this.knockout = knockout;
+		this.hideObject = hideObject;
+		
+	}
+	
+	
+	public override function clone ():BitmapFilter {
+		
+		return new DropShadowFilter (distance, angle, color, alpha, blurX, blurY, strength, quality, inner, knockout, hideObject);
+		
+	}
+	
+	
 }
 
 
+#else
+typedef DropShadowFilter = openfl._v2.filters.DropShadowFilter;
+#end
+#else
+typedef DropShadowFilter = flash.filters.DropShadowFilter;
 #end

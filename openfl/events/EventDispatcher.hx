@@ -1,13 +1,8 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
+package openfl.events; #if !flash #if !lime_legacy
 
-package openfl.events;
-#if display
+
+import openfl.events.EventPhase;
+import openfl.events.IEventDispatcher;
 
 
 /**
@@ -52,8 +47,17 @@ package openfl.events;
  *                   information about broadcast events, see the DisplayObject
  *                   class.
  */
-extern class EventDispatcher implements IEventDispatcher {
 
+@:access(openfl.events.Event)
+
+
+class EventDispatcher implements IEventDispatcher {
+	
+	
+	@:noCompletion private var __targetDispatcher:IEventDispatcher;
+	@:noCompletion private var __eventMap:Map<String, Array<Listener>>;
+	
+	
 	/**
 	 * Aggregates an instance of the EventDispatcher class.
 	 *
@@ -73,8 +77,17 @@ extern class EventDispatcher implements IEventDispatcher {
 	 *               this parameter in simple cases in which a class extends
 	 *               EventDispatcher.
 	 */
-	function new(?target : IEventDispatcher) : Void;
-
+	public function new (target:IEventDispatcher = null):Void {
+		
+		if (target != null) {
+			
+			__targetDispatcher = target;
+			
+		}
+		
+	}
+	
+	
 	/**
 	 * Registers an event listener object with an EventDispatcher object so that
 	 * the listener receives notification of an event. You can register event
@@ -168,8 +181,38 @@ extern class EventDispatcher implements IEventDispatcher {
 	 * @throws ArgumentError The <code>listener</code> specified is not a
 	 *                       function.
 	 */
-	function addEventListener(type : String, listener : Dynamic -> Void, useCapture : Bool = false, priority : Int = 0, useWeakReference : Bool = false) : Void;
-
+	public function addEventListener (type:String, listener:Dynamic->Void, useCapture:Bool = false, priority:Int = 0, useWeakReference:Bool = false):Void {
+		
+		if (__eventMap == null) {
+			
+			__eventMap = new Map<String, Array<Listener>> ();
+			
+		}
+		
+		if (!__eventMap.exists (type)) {
+			
+			var list = new Array<Listener> ();
+			list.push (new Listener (listener, useCapture, priority));
+			__eventMap.set (type, list);
+			
+		} else {
+			
+			var list = __eventMap.get (type);
+			
+			for (i in 0...list.length) {
+				
+				if (Reflect.compareMethods (list[i].callback, listener)) return;
+				
+			}
+			
+			list.push (new Listener (listener, useCapture, priority));
+			list.sort (__sortByPriority);
+			
+		}
+		
+	}
+	
+	
 	/**
 	 * Dispatches an event into the event flow. The event target is the
 	 * EventDispatcher object upon which the <code>dispatchEvent()</code> method
@@ -185,8 +228,64 @@ extern class EventDispatcher implements IEventDispatcher {
 	 *         that <code>preventDefault()</code> was called on the event.
 	 * @throws Error The event dispatch recursion limit has been reached.
 	 */
-	function dispatchEvent(event : Event) : Bool;
-
+	public function dispatchEvent (event:Event):Bool {
+		
+		if (__eventMap == null || event == null) return false;
+		
+		var list = __eventMap.get (event.type);
+		
+		if (list == null) return false;
+		
+		if (event.target == null) {
+			
+			if (__targetDispatcher != null) {
+				
+				event.target = __targetDispatcher;
+				
+			} else {
+				
+				event.target = this;
+				
+			}
+			
+		}
+		
+		event.currentTarget = this;
+		
+		var capture = (event.eventPhase == EventPhase.CAPTURING_PHASE);
+		var index = 0;
+		var listener;
+		
+		while (index < list.length) {
+			
+			listener = list[index];
+			
+			if (listener.useCapture == capture) {
+				
+				//listener.callback (event.clone ());
+				listener.callback (event);
+				
+				if (event.__isCancelledNow) {
+					
+					return true;
+					
+				}
+				
+			}
+			
+			if (listener == list[index]) {
+				
+				index++;
+				
+			}
+			
+		}
+		
+		return true;
+		
+	}
+	
+	
 	/**
 	 * Checks whether the EventDispatcher object has any listeners registered for
 	 * a specific type of event. This allows you to determine where an
@@ -207,8 +306,14 @@ extern class EventDispatcher implements IEventDispatcher {
 	 * @return A value of <code>true</code> if a listener of the specified type
 	 *         is registered; <code>false</code> otherwise.
 	 */
-	function hasEventListener(type : String) : Bool;
-
+	public function hasEventListener (type:String):Bool {
+		
+		if (__eventMap == null) return false;
+		return __eventMap.exists (type);
+		
+	}
+	
+	
 	/**
 	 * Removes a listener from the EventDispatcher object. If there is no
 	 * matching listener registered with the EventDispatcher object, a call to
@@ -224,9 +329,50 @@ extern class EventDispatcher implements IEventDispatcher {
 	 *                   to <code>true</code>, and another call with
 	 *                   <code>useCapture()</code> set to <code>false</code>.
 	 */
-	function removeEventListener(type : String, listener : Dynamic -> Void, useCapture : Bool = false) : Void;
-	function toString() : String;
-
+	public function removeEventListener (type:String, listener:Dynamic->Void, capture:Bool = false):Void {
+		
+		if (__eventMap == null) return;
+		
+		var list = __eventMap.get (type);
+		
+		if (list == null) return;
+		
+		for (i in 0...list.length) {
+			
+			if (list[i].match (listener, capture)) {
+				
+				list.splice (i, 1);
+				break;
+				
+			}
+			
+		}
+		
+		if (list.length == 0) {
+			
+			__eventMap.remove (type);
+			
+		}
+		
+		if (!__eventMap.iterator ().hasNext ()) {
+			
+			__eventMap = null;
+			
+		}
+		
+	}
+	
+	
+	public function toString ():String { 
+		
+		var full = Type.getClassName (Type.getClass (this));
+		var short = full.split (".").pop ();
+		
+		return untyped "[object " + short + "]";
+		
+	}
+	
+	
 	/**
 	 * Checks whether an event listener is registered with this EventDispatcher
 	 * object or any of its ancestors for the specified event type. This method
@@ -247,8 +393,53 @@ extern class EventDispatcher implements IEventDispatcher {
 	 * @return A value of <code>true</code> if a listener of the specified type
 	 *         will be triggered; <code>false</code> otherwise.
 	 */
-	function willTrigger(type : String) : Bool;
+	public function willTrigger (type:String):Bool {
+		
+		return hasEventListener (type);
+		
+	}
+	
+	
+	@:noCompletion private static function __sortByPriority (l1:Listener, l2:Listener):Int {
+		
+		return l1.priority == l2.priority ? 0 : (l1.priority > l2.priority ? -1 : 1);
+		
+	}
+	
+	
 }
 
 
+private class Listener {
+	
+	
+	public var callback:Dynamic->Void;
+	public var priority:Int;
+	public var useCapture:Bool;
+	
+	
+	public function new (callback:Dynamic->Void, useCapture:Bool, priority:Int) {
+		
+		this.callback = callback;
+		this.useCapture = useCapture;
+		this.priority = priority;
+		
+	}
+	
+	
+	public function match (callback:Dynamic->Void, useCapture:Bool) {
+		
+		return (Reflect.compareMethods (this.callback, callback) && this.useCapture == useCapture);
+		
+	}
+	
+	
+}
+
+
+#else
+typedef EventDispatcher = openfl._v2.events.EventDispatcher;
+#end
+#else
+typedef EventDispatcher = flash.events.EventDispatcher;
 #end

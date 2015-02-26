@@ -1,13 +1,4 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
-
-package openfl.text;
-#if display
+package openfl.text; #if !flash #if !lime_legacy
 
 
 /**
@@ -36,18 +27,19 @@ package openfl.text;
  * <p>The default formatting for each property is also described in each
  * property description.</p>
  */
-extern class TextFormat {
-
+class TextFormat {
+	
+	
 	/**
 	 * Indicates the alignment of the paragraph. Valid values are TextFormatAlign
 	 * constants.
 	 * 
 	 * @default TextFormatAlign.LEFT
 	 * @throws ArgumentError The <code>align</code> specified is not a member of
-	 *                       openfl.text.TextFormatAlign.
+	 *                       flash.text.TextFormatAlign.
 	 */
-	var align : TextFormatAlign;
-
+	public var align:TextFormatAlign;
+	
 	/**
 	 * Indicates the block indentation in pixels. Block indentation is applied to
 	 * an entire block of text; that is, to all lines of the text. In contrast,
@@ -56,51 +48,51 @@ extern class TextFormat {
 	 * TextFormat object does not specify block indentation(block indentation is
 	 * 0).
 	 */
-	var blockIndent : Null<Float>;
-
+	public var blockIndent:Null<Float>;
+	
 	/**
 	 * Specifies whether the text is boldface. The default value is
 	 * <code>null</code>, which means no boldface is used. If the value is
 	 * <code>true</code>, then the text is boldface.
 	 */
-	var bold : Null<Bool>;
-
+	public var bold:Null<Bool>;
+	
 	/**
 	 * Indicates that the text is part of a bulleted list. In a bulleted list,
 	 * each paragraph of text is indented. To the left of the first line of each
 	 * paragraph, a bullet symbol is displayed. The default value is
 	 * <code>null</code>, which means no bulleted list is used.
 	 */
-	var bullet : Null<Bool>;
-
+	public var bullet:Null<Bool>;
+	
 	/**
 	 * Indicates the color of the text. A number containing three 8-bit RGB
 	 * components; for example, 0xFF0000 is red, and 0x00FF00 is green. The
 	 * default value is <code>null</code>, which means that Flash Player uses the
 	 * color black(0x000000).
 	 */
-	var color : Null<UInt>;
-
+	public var color:Null<Int>;
+	
 	/**
 	 * The name of the font for text in this text format, as a string. The
 	 * default value is <code>null</code>, which means that Flash Player uses
 	 * Times New Roman font for the text.
 	 */
-	var font : String;
-
+	public var font:String;
+	
 	/**
 	 * Indicates the indentation from the left margin to the first character in
 	 * the paragraph. The default value is <code>null</code>, which indicates
 	 * that no indentation is used.
 	 */
-	var indent : Null<Float>;
-
+	public var indent:Null<Float>;
+	
 	/**
 	 * Indicates whether text in this text format is italicized. The default
 	 * value is <code>null</code>, which means no italics are used.
 	 */
-	var italic : Null<Bool>;
-
+	public var italic:Null<Bool>;
+	
 	/**
 	 * A Boolean value that indicates whether kerning is enabled
 	 * (<code>true</code>) or disabled(<code>false</code>). Kerning adjusts the
@@ -114,21 +106,21 @@ extern class TextFormat {
 	 * <p>The default value is <code>null</code>, which means that kerning is not
 	 * enabled.</p>
 	 */
-	var kerning : Null<Bool>;
-
+	public var kerning:Null<Bool>;
+	
 	/**
 	 * An integer representing the amount of vertical space(called
 	 * <i>leading</i>) between lines. The default value is <code>null</code>,
 	 * which indicates that the amount of leading used is 0.
 	 */
-	var leading : Null<Float>;
-
+	public var leading:Null<Float>;
+	
 	/**
 	 * The left margin of the paragraph, in pixels. The default value is
 	 * <code>null</code>, which indicates that the left margin is 0 pixels.
 	 */
-	var leftMargin : Null<Float>;
-
+	public var leftMargin:Null<Float>;
+	
 	/**
 	 * A number representing the amount of space that is uniformly distributed
 	 * between all characters. The value specifies the number of pixels that are
@@ -136,27 +128,27 @@ extern class TextFormat {
 	 * <code>null</code>, which means that 0 pixels of letter spacing is used.
 	 * You can use decimal values such as <code>1.75</code>.
 	 */
-	var letterSpacing : Null<Float>;
-
+	public var letterSpacing:Null<Float>;
+	
 	/**
 	 * The right margin of the paragraph, in pixels. The default value is
 	 * <code>null</code>, which indicates that the right margin is 0 pixels.
 	 */
-	var rightMargin : Null<Float>;
-
+	public var rightMargin:Null<Float>;
+	
 	/**
 	 * The size in pixels of text in this text format. The default value is
 	 * <code>null</code>, which means that a size of 12 is used.
 	 */
-	var size : Null<Float>;
-
+	public var size:Null<Float>;
+	
 	/**
 	 * Specifies custom tab stops as an array of non-negative integers. Each tab
 	 * stop is specified in pixels. If custom tab stops are not specified
 	 * (<code>null</code>), the default tab stop is 4(average character width).
 	 */
-	var tabStops : Array<UInt>;
-
+	public var tabStops:Array<Int>;
+	
 	/**
 	 * Indicates the target window where the hyperlink is displayed. If the
 	 * target window is an empty string, the text is displayed in the default
@@ -169,8 +161,8 @@ extern class TextFormat {
 	 * <code>null</code>, you can get or set this property, but the property will
 	 * have no effect.
 	 */
-	var target : String;
-
+	public var target:String;
+	
 	/**
 	 * Indicates whether the text that uses this text format is underlined
 	 * (<code>true</code>) or not(<code>false</code>). This underlining is
@@ -179,8 +171,8 @@ extern class TextFormat {
 	 * default value is <code>null</code>, which indicates that underlining is
 	 * not used.
 	 */
-	var underline : Null<Bool>;
-
+	public var underline:Null<Bool>;
+	
 	/**
 	 * Indicates the target URL for the text in this text format. If the
 	 * <code>url</code> property is an empty string, the text does not have a
@@ -190,8 +182,9 @@ extern class TextFormat {
 	 * <p><b>Note:</b> The text with the assigned text format must be set with
 	 * the <code>htmlText</code> property for the hyperlink to work.</p>
 	 */
-	var url : String;
-
+	public var url:String;
+	
+	
 	/**
 	 * Creates a TextFormat object with the specified properties. You can then
 	 * change the properties of the TextFormat object to change the formatting of
@@ -231,8 +224,76 @@ extern class TextFormat {
 	 * @param leading     A number that indicates the amount of leading vertical
 	 *                    space between lines.
 	 */
-	function new(?font : String, ?size : Float, ?color : UInt, ?bold : Bool, ?italic : Bool, ?underline : Bool, ?url : String, ?target : String, ?align : TextFormatAlign, ?leftMargin : Float, ?rightMargin : Float, ?indent : Float, ?leading : Float) : Void;
+	public function new (font:String = null, size:Null<Float> = null, color:Null<Int> = null, bold:Null<Bool> = null, italic:Null<Bool> = null, underline:Null<Bool> = null, url:String = null, target:String = null, align:TextFormatAlign = null, leftMargin:Null<Float> = null, rightMargin:Null<Float> = null, indent:Null<Float> = null, leading:Null<Float> = null) {
+		
+		this.font = font;
+		this.size = size;
+		this.color = color;
+		this.bold = bold;
+		this.italic = italic;
+		this.underline = underline;
+		this.url = url;
+		this.target = target;
+		this.align = align;
+		this.leftMargin = leftMargin;
+		this.rightMargin = rightMargin;
+		this.indent = indent;
+		this.leading = leading;
+		
+	}
+	
+	
+	public function clone ():TextFormat {
+		
+		var newFormat = new TextFormat (font, size, color, bold, italic, underline, url, target);
+		
+		newFormat.align = align;
+		newFormat.leftMargin = leftMargin;
+		newFormat.rightMargin = rightMargin;
+		newFormat.indent = indent;
+		newFormat.leading = leading;
+		
+		newFormat.blockIndent = blockIndent;
+		newFormat.bullet = bullet;
+		newFormat.kerning = kerning;
+		newFormat.letterSpacing = letterSpacing;
+		newFormat.tabStops = tabStops;
+		
+		return newFormat;
+		
+	}
+	
+	
+	@:noCompletion private function __merge (format:TextFormat):Void {
+		
+		if (format.font != null) font = format.font;
+		if (format.size != null) size = format.size;
+		if (format.color != null) color = format.color;
+		if (format.bold != null) bold = format.bold;
+		if (format.italic != null) italic = format.italic;
+		if (format.underline != null) underline = format.underline;
+		if (format.url != null) url = format.url;
+		if (format.target != null) target = format.target;
+		if (format.align != null) align = format.align;
+		if (format.leftMargin != null) leftMargin = format.leftMargin;
+		if (format.rightMargin != null) rightMargin = format.rightMargin;
+		if (format.indent != null) indent = format.indent;
+		if (format.leading != null) leading = format.leading;
+		if (format.blockIndent != null) blockIndent = format.blockIndent;
+		if (format.bullet != null) bullet = format.bullet;
+		if (format.kerning != null) kerning = format.kerning;
+		if (format.letterSpacing != null) letterSpacing = format.letterSpacing;
+		if (format.tabStops != null) tabStops = format.tabStops;
+		
+	}
+	
+	
 }
 
 
+#else
+typedef TextFormat = openfl._v2.text.TextFormat;
+#end
+#else
+typedef TextFormat = flash.text.TextFormat;
 #end

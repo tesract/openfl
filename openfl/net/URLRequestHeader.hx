@@ -1,13 +1,4 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
-
-package openfl.net;
-#if display
+package openfl.net; #if !flash
 
 
 /**
@@ -77,20 +68,22 @@ package openfl.net;
  * supported for <code>POST</code> requests, not for <code>GET</code>
  * requests.</p>
  */
-@:final extern class URLRequestHeader {
-
+class URLRequestHeader {
+	
+	
 	/**
 	 * An HTTP request header name(such as <code>Content-Type</code> or
 	 * <code>SOAPAction</code>).
 	 */
-	var name : String;
-
+	public var name:String;
+	
 	/**
 	 * The value associated with the <code>name</code> property(such as
 	 * <code>text/plain</code>).
 	 */
-	var value : String;
-
+	public var value:String;
+	
+	
 	/**
 	 * Creates a new URLRequestHeader object that encapsulates a single HTTP
 	 * request header. URLRequestHeader objects are used in the
@@ -101,8 +94,17 @@ package openfl.net;
 	 * @param value The value associated with the <code>name</code> property
 	 *             (such as <code>text/plain</code>).
 	 */
-	function new(?name : String, ?value : String):Void;
+	public function new (name:String = "", value:String = "") {
+		
+		this.name = name;
+		this.value = value;
+		
+	}
+	
+	
 }
 
 
+#else
+typedef URLRequestHeader = flash.net.URLRequestHeader;
 #end

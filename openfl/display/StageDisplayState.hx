@@ -1,28 +1,30 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
-
-package openfl.display;
-#if display
+package openfl.display; #if !flash
 
 
 /**
  * The StageDisplayState class provides values for the
  * <code>Stage.displayState</code> property.
  */
-@:fakeEnum(String) extern enum StageDisplayState {
-	FULL_SCREEN;
-	FULL_SCREEN_INTERACTIVE;
-
+enum StageDisplayState {
+	
 	/**
 	 * Specifies that the Stage is in normal mode.
 	 */
 	NORMAL;
+	
+	/**
+	 * Specifies that the Stage is in full-screen mode.
+	 */
+	FULL_SCREEN;
+	
+	/**
+	 * Specifies that the Stage is in full-screen mode with keyboard interactivity enabled.
+	 */
+	FULL_SCREEN_INTERACTIVE;
+	
 }
 
 
+#else
+typedef StageDisplayState = flash.display.StageDisplayState;
 #end

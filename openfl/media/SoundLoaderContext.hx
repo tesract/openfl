@@ -1,13 +1,4 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
-
-package openfl.media;
-#if display
+package openfl.media; #if !flash
 
 
 /**
@@ -40,8 +31,9 @@ package openfl.media;
  * Center Topic: <a href="http://www.adobe.com/go/devnet_security_en"
  * scope="external">Security</a>.</p>
  */
-extern class SoundLoaderContext {
-
+class SoundLoaderContext {
+	
+	
 	/**
 	 * The number of milliseconds to preload a streaming sound into a buffer
 	 * before the sound starts to stream.
@@ -54,8 +46,8 @@ extern class SoundLoaderContext {
 	 * created Sound objects(that is, Sound objects created in
 	 * ActionScript).</p>
 	 */
-	var bufferTime : Float;
-
+	public var bufferTime:Float;
+	
 	/**
 	 * Specifies whether the application should try to download a URL policy file
 	 * from the loaded sound's server before beginning to load the sound. This
@@ -147,8 +139,9 @@ extern class SoundLoaderContext {
 	 * href="http://www.adobe.com/go/devnet_security_en"
 	 * scope="external">Security</a>.</p>
 	 */
-	var checkPolicyFile : Bool;
-
+	public var checkPolicyFile:Bool;
+	
+	
 	/**
 	 * Creates a new sound loader context object.
 	 * 
@@ -158,8 +151,17 @@ extern class SoundLoaderContext {
 	 *                        file should be checked upon loading the object
 	 *                       (<code>true</code>) or not.
 	 */
-	function new(bufferTime : Float = 1000, checkPolicyFile : Bool = false) : Void;
+	public function new (bufferTime:Float = 0, checkPolicyFile:Bool = false) {
+		
+		this.bufferTime = bufferTime;
+		this.checkPolicyFile = checkPolicyFile;
+		
+	}
+	
+	
 }
 
 
+#else
+typedef SoundLoaderContext = flash.media.SoundLoaderContext;
 #end

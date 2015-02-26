@@ -1,13 +1,4 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
-
-package openfl.errors;
-#if display
+package openfl.errors; #if !flash
 
 
 /**
@@ -16,15 +7,24 @@ package openfl.errors;
  * methods in the IDataInput interface is called and there is insufficient
  * data to satisfy the read request.
  */
-extern class EOFError/* extends IOError*/ {
-
+class EOFError extends Error {
+	
+	
 	/**
 	 * Creates a new EOFError object.
 	 * 
 	 * @param message A string associated with the error object.
 	 */
-	function new(?message : String, id : Int = 0) : Void;
+	public function new () {
+		
+		super ("End of file was encountered", 2030);
+		
+	}
+	
+	
 }
 
 
+#else
+typedef EOFError = flash.errors.EOFError;
 #end

@@ -1,13 +1,8 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
+package openfl.geom; #if !flash #if !lime_legacy
 
-package openfl.geom;
-#if display
+
+import lime.math.ColorMatrix;
+import lime.utils.Float32Array;
 
 
 /**
@@ -50,8 +45,9 @@ package openfl.geom;
  * clip(such as a loaded SWF object). They apply only to graphics and symbols
  * that are attached to the movie clip.</p>
  */
-extern class ColorTransform {
-
+class ColorTransform {
+	
+	
 	/**
 	 * A decimal value that is multiplied with the alpha transparency channel
 	 * value.
@@ -61,26 +57,26 @@ extern class ColorTransform {
 	 * affects the value of the <code>alphaMultiplier</code> property of that
 	 * display object's <code>transform.colorTransform</code> property.</p>
 	 */
-	var alphaMultiplier : Float;
-
+	public var alphaMultiplier:Float;
+	
 	/**
 	 * A number from -255 to 255 that is added to the alpha transparency channel
 	 * value after it has been multiplied by the <code>alphaMultiplier</code>
 	 * value.
 	 */
-	var alphaOffset : Float;
-
+	public var alphaOffset:Float;
+	
 	/**
 	 * A decimal value that is multiplied with the blue channel value.
 	 */
-	var blueMultiplier : Float;
-
+	public var blueMultiplier:Float;
+	
 	/**
 	 * A number from -255 to 255 that is added to the blue channel value after it
 	 * has been multiplied by the <code>blueMultiplier</code> value.
 	 */
-	var blueOffset : Float;
-
+	public var blueOffset:Float;
+	
 	/**
 	 * The RGB color value for a ColorTransform object.
 	 *
@@ -97,30 +93,31 @@ extern class ColorTransform {
 	 * tells the ActionScript compiler that the number is a hexadecimal
 	 * value.</p>
 	 */
-	var color : UInt;
-
+	public var color (get, set):Int;
+	
 	/**
 	 * A decimal value that is multiplied with the green channel value.
 	 */
-	var greenMultiplier : Float;
-
+	public var greenMultiplier:Float;
+	
 	/**
 	 * A number from -255 to 255 that is added to the green channel value after
 	 * it has been multiplied by the <code>greenMultiplier</code> value.
 	 */
-	var greenOffset : Float;
-
+	public var greenOffset:Float;
+	
 	/**
 	 * A decimal value that is multiplied with the red channel value.
 	 */
-	var redMultiplier : Float;
-
+	public var redMultiplier:Float;
+	
 	/**
 	 * A number from -255 to 255 that is added to the red channel value after it
 	 * has been multiplied by the <code>redMultiplier</code> value.
 	 */
-	var redOffset : Float;
-
+	public var redOffset:Float;
+	
+	
 	/**
 	 * Creates a ColorTransform object for a display object with the specified
 	 * color channel values and alpha values.
@@ -142,8 +139,20 @@ extern class ColorTransform {
 	 * @param alphaOffset     The offset for alpha transparency channel value, in
 	 *                        the range from -255 to 255.
 	 */
-	function new(redMultiplier : Float = 1, greenMultiplier : Float = 1, blueMultiplier : Float = 1, alphaMultiplier : Float = 1, redOffset : Float = 0, greenOffset : Float = 0, blueOffset : Float = 0, alphaOffset : Float = 0) : Void;
-
+	public function new (redMultiplier:Float = 1, greenMultiplier:Float = 1, blueMultiplier:Float = 1, alphaMultiplier:Float = 1, redOffset:Float = 0, greenOffset:Float = 0, blueOffset:Float = 0, alphaOffset:Float = 0):Void {
+		
+		this.redMultiplier = redMultiplier;
+		this.greenMultiplier = greenMultiplier;
+		this.blueMultiplier = blueMultiplier;
+		this.alphaMultiplier = alphaMultiplier;
+		this.redOffset = redOffset;
+		this.greenOffset = greenOffset;
+		this.blueOffset = blueOffset;
+		this.alphaOffset = alphaOffset;
+		
+	}
+	
+	
 	/**
 	 * Concatenates the ColorTranform object specified by the <code>second</code>
 	 * parameter with the current ColorTransform object and sets the current
@@ -155,17 +164,58 @@ extern class ColorTransform {
 	 * @param second The ColorTransform object to be combined with the current
 	 *               ColorTransform object.
 	 */
-	function concat(second : ColorTransform) : Void;
+	public function concat (second:ColorTransform):Void {
+		
+		redMultiplier += second.redMultiplier;
+		greenMultiplier += second.greenMultiplier;
+		blueMultiplier += second.blueMultiplier;
+		alphaMultiplier += second.alphaMultiplier;
+		
+	}
+	
+	
+	
+	
+	// Getters & Setters
+	
+	
+	
 
-	/**
-	 * Formats and returns a string that describes all of the properties of the
-	 * ColorTransform object.
-	 * 
-	 * @return A string that lists all of the properties of the ColorTransform
-	 *         object.
-	 */
-	function toString() : String;
+	@:noCompletion private function get_color ():Int {
+		
+		return ((Std.int (redOffset) << 16) | (Std.int (greenOffset) << 8) | Std.int (blueOffset));
+		
+	}
+	
+	
+	@:noCompletion private function set_color (value:Int):Int {
+		
+		redOffset = (value >> 16) & 0xFF;
+		greenOffset = (value >> 8) & 0xFF;
+		blueOffset = value & 0xFF;
+		
+		redMultiplier = 0;
+		greenMultiplier = 0;
+		blueMultiplier = 0;
+		
+		return color;
+		
+	}
+	
+	
+	@:noCompletion private function __toLimeColorMatrix ():ColorMatrix {
+		
+		return cast new Float32Array ([ redMultiplier, 0, 0, 0, redOffset / 255, 0, greenMultiplier, 0, 0, greenOffset / 255, 0, 0, blueMultiplier, 0, blueOffset / 255, 0, 0, 0, alphaMultiplier, alphaOffset / 255 ]);
+		
+	}
+	
+	
 }
 
 
+#else
+typedef ColorTransform = openfl._v2.geom.ColorTransform;
+#end
+#else
+typedef ColorTransform = flash.geom.ColorTransform;
 #end

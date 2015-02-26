@@ -1,13 +1,14 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
+package openfl.display; #if !flash #if !lime_legacy
 
-package openfl.display;
-#if display
+
+import openfl.events.EventDispatcher;
+import openfl.events.UncaughtErrorEvents;
+import openfl.system.ApplicationDomain;
+import openfl.utils.ByteArray;
+
+#if (js && html5)
+import js.Browser;
+#end
 
 
 /**
@@ -20,7 +21,7 @@ package openfl.display;
  * <p>You can access LoaderInfo objects in two ways: </p>
  *
  * <ul>
- *   <li>The <code>contentLoaderInfo</code> property of a openfl.display.Loader
+ *   <li>The <code>contentLoaderInfo</code> property of a flash.display.Loader
  * object -  The <code>contentLoaderInfo</code> property is always available
  * for any Loader object. For a Loader object that has not called the
  * <code>load()</code> or <code>loadBytes()</code> method, or that has not
@@ -107,8 +108,11 @@ package openfl.display;
  *                   performed by the same Loader object and the original
  *                   content is removed prior to the load beginning.
  */
-extern class LoaderInfo extends openfl.events.EventDispatcher {
-
+class LoaderInfo extends EventDispatcher {
+	
+	
+	private static var __rootURL = #if (js && html5) Browser.document.URL #else "" #end;
+	
 	/**
 	 * When an external SWF file is loaded, all ActionScript 3.0 definitions
 	 * contained in the loaded class are stored in the
@@ -131,8 +135,8 @@ extern class LoaderInfo extends openfl.events.EventDispatcher {
 	 * @throws SecurityError This security sandbox of the caller is not allowed
 	 *                       to access this ApplicationDomain.
 	 */
-	var applicationDomain(default, null) : openfl.system.ApplicationDomain;
-
+	public var applicationDomain:ApplicationDomain;
+	
 	/**
 	 * The bytes associated with a LoaderInfo object.
 	 * 
@@ -149,14 +153,14 @@ extern class LoaderInfo extends openfl.events.EventDispatcher {
 	 *                       href="http://www.adobe.com/go/devnet_security_en"
 	 *                       scope="external">Security</a>.</p>
 	 */
-	var bytes(default,null) : openfl.utils.ByteArray;
-
+	public var bytes (default, null):ByteArray;
+	
 	/**
 	 * The number of bytes that are loaded for the media. When this number equals
 	 * the value of <code>bytesTotal</code>, all of the bytes are loaded.
 	 */
-	var bytesLoaded(default,null) : UInt;
-
+	public var bytesLoaded (default, null):Int;
+	
 	/**
 	 * The number of compressed bytes in the entire media file.
 	 *
@@ -166,8 +170,27 @@ extern class LoaderInfo extends openfl.events.EventDispatcher {
 	 * <code>bytesTotal</code> reflects the actual number of bytes to be
 	 * downloaded.</p>
 	 */
-	var bytesTotal(default,null) : UInt;
-
+	public var bytesTotal (default, null):Int;
+	
+	/**
+	 * Expresses the trust relationship from content(child) to the Loader
+	 * (parent). If the child has allowed the parent access, <code>true</code>;
+	 * otherwise, <code>false</code>. This property is set to <code>true</code>
+	 * if the child object has called the <code>allowDomain()</code> method to
+	 * grant permission to the parent domain or if a URL policy is loaded at the
+	 * child domain that grants permission to the parent domain. If child and
+	 * parent are in the same domain, this property is set to <code>true</code>.
+	 *
+	 * <p>For more information related to security, see the Flash Player
+	 * Developer Center Topic: <a
+	 * href="http://www.adobe.com/go/devnet_security_en"
+	 * scope="external">Security</a>.</p>
+	 * 
+	 * @throws Error Thrown if the file is not downloaded sufficiently to
+	 *               retrieve the requested information.
+	 */
+	public var childAllowsParent (default, null):Bool;
+	
 	/**
 	 * The loaded object associated with this LoaderInfo object.
 	 * 
@@ -184,8 +207,8 @@ extern class LoaderInfo extends openfl.events.EventDispatcher {
 	 *                       href="http://www.adobe.com/go/devnet_security_en"
 	 *                       scope="external">Security</a>.</p>
 	 */
-	var content(default,null) : DisplayObject;
-
+	public var content (default, null):DisplayObject;
+	
 	/**
 	 * The MIME type of the loaded file. The value is <code>null</code> if not
 	 * enough of the file has loaded in order to determine the type. The
@@ -197,8 +220,8 @@ extern class LoaderInfo extends openfl.events.EventDispatcher {
 	 *   <li><code>"image/png"</code></li>
 	 * </ul>
 	 */
-	var contentType(default,null) : String;
-
+	public var contentType (default, null):String;
+	
 	/**
 	 * The nominal frame rate, in frames per second, of the loaded SWF file. This
 	 * number is often an integer, but need not be.
@@ -214,8 +237,8 @@ extern class LoaderInfo extends openfl.events.EventDispatcher {
 	 *               requested information.
 	 * @throws Error If the file is not a SWF file.
 	 */
-	var frameRate(default,null) : Float;
-
+	public var frameRate (default, null):Float;
+	
 	/**
 	 * The nominal height of the loaded file. This value might differ from the
 	 * actual height at which the content is displayed, since the loaded content
@@ -224,8 +247,8 @@ extern class LoaderInfo extends openfl.events.EventDispatcher {
 	 * @throws Error If the file is not downloaded sufficiently to retrieve the
 	 *               requested information.
 	 */
-	var height(default,null) : Int;
-
+	public var height (default, null):Int;
+	
 	/**
 	 * The Loader object associated with this LoaderInfo object. If this
 	 * LoaderInfo object is the <code>loaderInfo</code> property of the instance
@@ -244,15 +267,15 @@ extern class LoaderInfo extends openfl.events.EventDispatcher {
 	 *                       href="http://www.adobe.com/go/devnet_security_en"
 	 *                       scope="external">Security</a>.</p>
 	 */
-	var loader(default,null) : Loader;
-
+	public var loader (default, null):Loader;
+	
 	/**
 	 * The URL of the SWF file that initiated the loading of the media described
 	 * by this LoaderInfo object. For the instance of the main class of the SWF
 	 * file, this URL is the same as the SWF file's own URL.
 	 */
-	var loaderURL(default,null) : String;
-
+	public var loaderURL (default, null):String;
+	
 	/**
 	 * An object that contains name-value pairs that represent the parameters
 	 * provided to the loaded SWF file.
@@ -273,8 +296,8 @@ extern class LoaderInfo extends openfl.events.EventDispatcher {
 	 * only non-null for Loader objects that contain SWF files that use
 	 * ActionScript 3.0.</p>
 	 */
-	var parameters(default,null) : Dynamic<String>;
-
+	public var parameters (default, null):Dynamic<String>;
+	
 	/**
 	 * Expresses the trust relationship from Loader(parent) to the content
 	 * (child). If the parent has allowed the child access, <code>true</code>;
@@ -292,8 +315,8 @@ extern class LoaderInfo extends openfl.events.EventDispatcher {
 	 * @throws Error Thrown if the file is not downloaded sufficiently to
 	 *               retrieve the requested information.
 	 */
-	var parentAllowsChild(default, null) : Bool;
-
+	public var parentAllowsChild (default, null):Bool;
+	
 	/**
 	 * Expresses the domain relationship between the loader and the content:
 	 * <code>true</code> if they have the same origin domain; <code>false</code>
@@ -302,8 +325,8 @@ extern class LoaderInfo extends openfl.events.EventDispatcher {
 	 * @throws Error Thrown if the file is not downloaded sufficiently to
 	 *               retrieve the requested information.
 	 */
-	var sameDomain(default,null) : Bool;
-
+	public var sameDomain (default, null):Bool;
+	
 	/**
 	 * An EventDispatcher instance that can be used to exchange events across
 	 * security boundaries. Even when the Loader object and the loaded content
@@ -311,8 +334,25 @@ extern class LoaderInfo extends openfl.events.EventDispatcher {
 	 * access <code>sharedEvents</code> and send and receive events via this
 	 * object.
 	 */
-	var sharedEvents(default,null) : openfl.events.EventDispatcher;
-
+	public var sharedEvents (default, null):EventDispatcher;
+	
+	/**
+	 * An object that dispatches an <code>uncaughtError</code> event when an
+	 * unhandled error occurs in code in this LoaderInfo object's SWF file. An
+	 * uncaught error happens when an error is thrown outside of any
+	 * <code>try..catch</code> blocks or when an ErrorEvent object is dispatched
+	 * with no registered listeners.
+	 *
+	 * <p>This property is created when the SWF associated with this LoaderInfo
+	 * has finished loading. Until then the <code>uncaughtErrorEvents</code>
+	 * property is <code>null</code>. In an ActionScript-only project, you can
+	 * access this property during or after the execution of the constructor
+	 * function of the main class of the SWF file. For a Flex project, the
+	 * <code>uncaughtErrorEvents</code> property is available after the
+	 * <code>applicationComplete</code> event is dispatched.</p>
+	 */
+	public var uncaughtErrorEvents (default, null):UncaughtErrorEvents;
+	
 	/**
 	 * The URL of the media being loaded.
 	 *
@@ -327,8 +367,8 @@ extern class LoaderInfo extends openfl.events.EventDispatcher {
 	 * <p>In some cases, the value of the <code>url</code> property is truncated;
 	 * see the <code>isURLInaccessible</code> property for details.</p>
 	 */
-	var url(default,null) : String;
-
+	public var url (default, null):String;
+	
 	/**
 	 * The nominal width of the loaded content. This value might differ from the
 	 * actual width at which the content is displayed, since the loaded content
@@ -337,8 +377,49 @@ extern class LoaderInfo extends openfl.events.EventDispatcher {
 	 * @throws Error If the file is not downloaded sufficiently to retrieve the
 	 *               requested information.
 	 */
-	var width(default,null) : Int;
+	public var width (default, null):Int;
+	//static function getLoaderInfoByDefinition(object : Dynamic) : LoaderInfo;
+	
+	
+	private function new () {
+		
+		super ();
+		
+		applicationDomain = ApplicationDomain.currentDomain;
+		bytesLoaded = 0;
+		bytesTotal = 0;
+		childAllowsParent = true;
+		parameters = {};
+		
+	}
+	
+	
+	public static function create (loader:Loader):LoaderInfo {
+		
+		var loaderInfo = new LoaderInfo ();
+		loaderInfo.uncaughtErrorEvents = new UncaughtErrorEvents ();
+		
+		if (loader != null) {
+			
+			loaderInfo.loader = loader;
+			
+		} else {
+			
+			loaderInfo.url = __rootURL;
+			
+		}
+		
+		return loaderInfo;
+		
+	}
+	
+	
 }
 
 
+#else
+typedef LoaderInfo = openfl._v2.display.LoaderInfo;
+#end
+#else
+typedef LoaderInfo = flash.display.LoaderInfo;
 #end

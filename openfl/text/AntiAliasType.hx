@@ -1,21 +1,12 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
-
-package openfl.text;
-#if display
+package openfl.text; #if !flash
 
 
 /**
  * The AntiAliasType class provides values for anti-aliasing in the
- * openfl.text.TextField class.
+ * flash.text.TextField class.
  */
-@:fakeEnum(String) extern enum AntiAliasType {
-
+enum AntiAliasType {
+	
 	/**
 	 * Sets anti-aliasing to advanced anti-aliasing. Advanced anti-aliasing
 	 * allows font faces to be rendered at very high quality at small sizes. It
@@ -26,7 +17,7 @@ package openfl.text;
 	 * <code>AntiAliasType.ADVANCED</code>.
 	 */
 	ADVANCED;
-
+	
 	/**
 	 * Sets anti-aliasing to the anti-aliasing that is used in Flash Player 7 and
 	 * earlier. This setting is recommended for applications that do not have a
@@ -35,7 +26,10 @@ package openfl.text;
 	 * <code>AntiAliasType.NORMAL</code>.
 	 */
 	NORMAL;
+	
 }
 
 
+#else
+typedef AntiAliasType = flash.text.AntiAliasType;
 #end

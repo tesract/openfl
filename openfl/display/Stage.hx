@@ -1,13 +1,39 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
+package openfl.display; #if !flash #if !lime_legacy
 
-package openfl.display;
-#if display
+
+import haxe.EnumFlags;
+import lime.graphics.opengl.GL;
+import lime.graphics.opengl.GLProgram;
+import lime.graphics.opengl.GLUniformLocation;
+import lime.graphics.CanvasRenderContext;
+import lime.graphics.DOMRenderContext;
+import lime.graphics.GLRenderContext;
+import lime.graphics.RenderContext;
+import lime.math.Matrix4;
+import lime.utils.GLUtils;
+import openfl._internal.renderer.AbstractRenderer;
+import openfl._internal.renderer.canvas.CanvasRenderer;
+import openfl._internal.renderer.dom.DOMRenderer;
+import openfl._internal.renderer.opengl.GLRenderer;
+import openfl.events.Event;
+import openfl.events.EventPhase;
+import openfl.events.FocusEvent;
+import openfl.events.KeyboardEvent;
+import openfl.events.MouseEvent;
+import openfl.events.TouchEvent;
+import openfl.geom.Matrix;
+import openfl.geom.Point;
+import openfl.geom.Rectangle;
+import openfl.ui.Keyboard;
+import openfl.ui.KeyLocation;
+
+#if js
+import js.html.CanvasElement;
+import js.html.DivElement;
+import js.html.Element;
+import js.html.HtmlElement;
+import js.Browser;
+#end
 
 
 /**
@@ -126,8 +152,13 @@ package openfl.display;
  * @event stageVideoAvailability Dispatched by the Stage object when the state
  *                               of the stageVideos property changes.
  */
-extern class Stage extends DisplayObjectContainer {
 
+@:access(openfl.events.Event)
+
+
+class Stage extends Sprite {
+	
+	
 	/**
 	 * A value from the StageAlign class that specifies the alignment of the
 	 * stage in Flash Player or the browser. The following are valid values:
@@ -140,17 +171,18 @@ extern class Stage extends DisplayObjectContainer {
 	 * information, see the "Security" chapter in the <i>ActionScript 3.0
 	 * Developer's Guide</i>.</p>
 	 */
-	var align : StageAlign;
-
+	public var align:StageAlign;
+	
 	/**
 	 * Specifies whether this stage allows the use of the full screen mode
 	 */
-	var allowsFullScreen(default,null) : Bool;
-
+	public var allowsFullScreen:Bool;
+	
 	/**
+	 * The window background color.
 	 */
-	var color : UInt;
-
+	public var color (get, set):Int;
+	
 	/**
 	 * A value from the StageDisplayState class that specifies which display
 	 * state to use. The following are valid values:
@@ -238,8 +270,8 @@ extern class Stage extends DisplayObjectContainer {
 	 *                       <code>allowFullScreen</code> attribute is not set to
 	 *                       <code>true</code> throws a security error.
 	 */
-	var displayState : StageDisplayState;
-
+	public var displayState (default, set):StageDisplayState;
+	
 	/**
 	 * The interactive object with keyboard focus; or <code>null</code> if focus
 	 * is not set or if the focused object belongs to a security sandbox to which
@@ -247,8 +279,8 @@ extern class Stage extends DisplayObjectContainer {
 	 * 
 	 * @throws Error Throws an error if focus cannot be set to the target.
 	 */
-	var focus : InteractiveObject;
-
+	public var focus (get, set):InteractiveObject;
+	
 	/**
 	 * Gets and sets the frame rate of the stage. The frame rate is defined as
 	 * frames per second. By default the rate is set to the frame rate of the
@@ -277,8 +309,8 @@ extern class Stage extends DisplayObjectContainer {
 	 *                       For more information, see the "Security" chapter in
 	 *                       the <i>ActionScript 3.0 Developer's Guide</i>.
 	 */
-	var frameRate : Float;
-
+	public var frameRate:Float;
+	
 	/**
 	 * A value from the StageQuality class that specifies which rendering quality
 	 * is used. The following are valid values:
@@ -334,8 +366,8 @@ extern class Stage extends DisplayObjectContainer {
 	 *                       For more information, see the "Security" chapter in
 	 *                       the <i>ActionScript 3.0 Developer's Guide</i>.
 	 */
-	var quality : StageQuality;
-
+	public var quality:StageQuality;
+	
 	/**
 	 * A value from the StageScaleMode class that specifies which scale mode to
 	 * use. The following are valid values:
@@ -368,30 +400,9 @@ extern class Stage extends DisplayObjectContainer {
 	 *                       For more information, see the "Security" chapter in
 	 *                       the <i>ActionScript 3.0 Developer's Guide</i>.
 	 */
-	var scaleMode : StageScaleMode;
-
-	/**
-	 * Specifies whether to show or hide the default items in the Flash runtime
-	 * context menu.
-	 *
-	 * <p>If the <code>showDefaultContextMenu</code> property is set to
-	 * <code>true</code>(the default), all context menu items appear. If the
-	 * <code>showDefaultContextMenu</code> property is set to <code>false</code>,
-	 * only the Settings and About... menu items appear.</p>
-	 * 
-	 * @throws SecurityError Calling the <code>showDefaultContextMenu</code>
-	 *                       property of a Stage object throws an exception for
-	 *                       any caller that is not in the same security sandbox
-	 *                       as the Stage owner(the main SWF file). To avoid
-	 *                       this, the Stage owner can grant permission to the
-	 *                       domain of the caller by calling the
-	 *                       <code>Security.allowDomain()</code> method or the
-	 *                       <code>Security.allowInsecureDomain()</code> method.
-	 *                       For more information, see the "Security" chapter in
-	 *                       the <i>ActionScript 3.0 Developer's Guide</i>.
-	 */
-	var showDefaultContextMenu : Bool;
-
+	public var scaleMode:StageScaleMode;
+	public var stage3Ds (default, null):Vector<Stage3D>;
+	
 	/**
 	 * Specifies whether or not objects display a glowing border when they have
 	 * focus.
@@ -407,8 +418,8 @@ extern class Stage extends DisplayObjectContainer {
 	 *                       For more information, see the "Security" chapter in
 	 *                       the <i>ActionScript 3.0 Developer's Guide</i>.
 	 */
-	var stageFocusRect : Bool;
-
+	public var stageFocusRect:Bool;
+	
 	/**
 	 * The current height, in pixels, of the Stage.
 	 *
@@ -450,8 +461,8 @@ extern class Stage extends DisplayObjectContainer {
 	 *                       For more information, see the "Security" chapter in
 	 *                       the <i>ActionScript 3.0 Developer's Guide</i>.
 	 */
-	var stageHeight : Int;
-
+	public var stageHeight (default, null):Int;
+	
 	/**
 	 * Specifies the current width, in pixels, of the Stage.
 	 *
@@ -493,8 +504,87 @@ extern class Stage extends DisplayObjectContainer {
 	 *                       For more information, see the "Security" chapter in
 	 *                       the <i>ActionScript 3.0 Developer's Guide</i>.
 	 */
-	var stageWidth : Int;
-
+	public var stageWidth (default, null):Int;
+	
+	@:noCompletion private var __clearBeforeRender:Bool;
+	@:noCompletion private var __color:Int;
+	@:noCompletion private var __colorSplit:Array<Float>;
+	@:noCompletion private var __colorString:String;
+	@:noCompletion private var __dirty:Bool;
+	@:noCompletion private var __dragBounds:Rectangle;
+	@:noCompletion private var __dragObject:Sprite;
+	@:noCompletion private var __dragOffsetX:Float;
+	@:noCompletion private var __dragOffsetY:Float;
+	@:noCompletion private var __focus:InteractiveObject;
+	@:noCompletion private var __fullscreen:Bool;
+	@:noCompletion private var __invalidated:Bool;
+	@:noCompletion private var __mouseX:Float = 0;
+	@:noCompletion private var __mouseY:Float = 0;
+	@:noCompletion private var __originalWidth:Int;
+	@:noCompletion private var __originalHeight:Int;
+	@:noCompletion private var __renderer:AbstractRenderer;
+	@:noCompletion private var __stack:Array<DisplayObject>;
+	@:noCompletion private var __transparent:Bool;
+	@:noCompletion private var __wasDirty:Bool;
+	
+	#if js
+	//@:noCompletion private var __div:DivElement;
+	//@:noCompletion private var __element:HtmlElement;
+	#if stats
+	@:noCompletion private var __stats:Dynamic;
+	#end
+	#end
+	
+	
+	public function new (width:Int, height:Int, color:Null<Int> = null) {
+		
+		super ();
+		
+		if (color == null) {
+			
+			__transparent = true;
+			this.color = 0x000000;
+			
+		} else {
+			
+			this.color = color;
+			
+		}
+		
+		this.name = null;
+		
+		__mouseX = 0;
+		__mouseY = 0;
+		
+		stageWidth = width;
+		stageHeight = height;
+		
+		this.stage = this;
+		
+		align = StageAlign.TOP_LEFT;
+		allowsFullScreen = false;
+		displayState = StageDisplayState.NORMAL;
+		frameRate = 60;
+		quality = StageQuality.HIGH;
+		scaleMode = StageScaleMode.NO_SCALE;
+		stageFocusRect = true;
+		
+		__clearBeforeRender = true;
+		__stack = [];
+		
+		stage3Ds = new Vector ();
+		stage3Ds.push (new Stage3D ());
+		
+	}
+	
+	
+	public override function globalToLocal (pos:Point):Point {
+		
+		return pos;
+		
+	}
+	
+	
 	/**
 	 * Calling the <code>invalidate()</code> method signals Flash runtimes to
 	 * alert display objects on the next opportunity it has to render the display
@@ -517,8 +607,490 @@ extern class Stage extends DisplayObjectContainer {
 	 * <code>Security.allowDomain()</code> method.</p>
 	 * 
 	 */
-	function invalidate() : Void;
+	public function invalidate ():Void {
+		
+		__invalidated = true;
+		
+	}
+	
+	
+	public override function localToGlobal (pos:Point):Point {
+		
+		return pos;
+		
+	}
+	
+	
+	@:noCompletion private function __drag (mouse:Point):Void {
+		
+		var parent = __dragObject.parent;
+		if (parent != null) {
+			
+			mouse = parent.globalToLocal (mouse);
+			
+		}
+		
+		var x = mouse.x + __dragOffsetX;
+		var y = mouse.y + __dragOffsetY;
+		
+		if (__dragBounds != null) {
+			
+			if (x < __dragBounds.x) {
+				
+				x = __dragBounds.x;
+				
+			} else if (x > __dragBounds.right) {
+				
+				x = __dragBounds.right;
+				
+			}
+			
+			if (y < __dragBounds.y) {
+				
+				y = __dragBounds.y;
+				
+			} else if (y > __dragBounds.bottom) {
+				
+				y = __dragBounds.bottom;
+				
+			}
+			
+		}
+		
+		__dragObject.x = x;
+		__dragObject.y = y;
+		
+	}
+	
+	
+	@:noCompletion private function __fireEvent (event:Event, stack:Array<DisplayObject>):Void {
+		
+		var length = stack.length;
+		
+		if (length == 0) {
+			
+			event.eventPhase = EventPhase.AT_TARGET;
+			event.target.__broadcast (event, false);
+			
+		} else {
+			
+			event.eventPhase = EventPhase.CAPTURING_PHASE;
+			event.target = stack[stack.length - 1];
+			
+			for (i in 0...length - 1) {
+				
+				stack[i].__broadcast (event, false);
+				
+				if (event.__isCancelled) {
+					
+					return;
+					
+				}
+				
+			}
+			
+			event.eventPhase = EventPhase.AT_TARGET;
+			event.target.__broadcast (event, false);
+			
+			if (event.__isCancelled) {
+				
+				return;
+				
+			}
+			
+			if (event.bubbles) {
+				
+				event.eventPhase = EventPhase.BUBBLING_PHASE;
+				var i = length - 2;
+				
+				while (i >= 0) {
+					
+					stack[i].__broadcast (event, false);
+					
+					if (event.__isCancelled) {
+						
+						return;
+						
+					}
+					
+					i--;
+					
+				}
+				
+			}
+			
+		}
+		
+	}
+	
+	
+	@:noCompletion private override function __getInteractive (stack:Array<DisplayObject>):Void {
+		
+		stack.push (this);
+		
+	}
+	
+	
+	@:noCompletion private function __render (context:RenderContext):Void {
+		
+		__broadcast (new Event (Event.ENTER_FRAME), true);
+		
+		if (__invalidated) {
+			
+			__invalidated = false;
+			__broadcast (new Event (Event.RENDER), true);
+			
+		}
+		
+		__renderable = true;
+		__update (false, true);
+		
+		switch (context) {
+			
+			case OPENGL (gl):
+				
+				if (__renderer == null) {
+					
+					__renderer = new GLRenderer (stageWidth, stageHeight, gl);
+					
+				}
+				
+				__renderer.render (this);
+			
+			case CANVAS (context):
+				
+				if (__renderer == null) {
+					
+					__renderer = new CanvasRenderer (stageWidth, stageHeight, context);
+					
+				}
+				
+				__renderer.render (this);
+			
+			case DOM (element):
+				
+				if (__renderer == null) {
+					
+					__renderer = new DOMRenderer (stageWidth, stageHeight, element);
+					
+				}
+				
+				__renderer.render (this);
+			
+			default:
+			
+		}
+		
+	}
+	
+	
+	@:noCompletion private function __resize ():Void {
+		
+		/*
+		if (__element != null && (__div == null || (__div != null && __fullscreen))) {
+			
+			if (__fullscreen) {
+				
+				stageWidth = __element.clientWidth;
+				stageHeight = __element.clientHeight;
+				
+				if (__canvas != null) {
+					
+					if (__element != cast __canvas) {
+						
+						__canvas.width = stageWidth;
+						__canvas.height = stageHeight;
+						
+					}
+					
+				} else {
+					
+					__div.style.width = stageWidth + "px";
+					__div.style.height = stageHeight + "px";
+					
+				}
+				
+			} else {
+				
+				var scaleX = __element.clientWidth / __originalWidth;
+				var scaleY = __element.clientHeight / __originalHeight;
+				
+				var currentRatio = scaleX / scaleY;
+				var targetRatio = Math.min (scaleX, scaleY);
+				
+				if (__canvas != null) {
+					
+					if (__element != cast __canvas) {
+						
+						__canvas.style.width = __originalWidth * targetRatio + "px";
+						__canvas.style.height = __originalHeight * targetRatio + "px";
+						__canvas.style.marginLeft = ((__element.clientWidth - (__originalWidth * targetRatio)) / 2) + "px";
+						__canvas.style.marginTop = ((__element.clientHeight - (__originalHeight * targetRatio)) / 2) + "px";
+						
+					}
+					
+				} else {
+					
+					__div.style.width = __originalWidth * targetRatio + "px";
+					__div.style.height = __originalHeight * targetRatio + "px";
+					__div.style.marginLeft = ((__element.clientWidth - (__originalWidth * targetRatio)) / 2) + "px";
+					__div.style.marginTop = ((__element.clientHeight - (__originalHeight * targetRatio)) / 2) + "px";
+					
+				}
+				
+			}
+			
+		}*/
+		
+	}
+	
+	
+	@:noCompletion private function __startDrag (sprite:Sprite, lockCenter:Bool, bounds:Rectangle):Void {
+		
+		__dragBounds = (bounds == null) ? null : bounds.clone ();
+		__dragObject = sprite;
+		
+		if (__dragObject != null) {
+			
+			if (lockCenter) {
+				
+				__dragOffsetX = -__dragObject.width / 2;
+				__dragOffsetY = -__dragObject.height / 2;
+				
+			} else {
+				
+				var mouse = new Point (mouseX, mouseY);
+				var parent = __dragObject.parent;
+				
+				if (parent != null) {
+					
+					mouse = parent.globalToLocal (mouse);
+					
+				}
+				
+				__dragOffsetX = __dragObject.x - mouse.x;
+				__dragOffsetY = __dragObject.y - mouse.y;
+				
+			}
+			
+		}
+		
+	}
+	
+	
+	@:noCompletion private function __stopDrag (sprite:Sprite):Void {
+		
+		__dragBounds = null;
+		__dragObject = null;
+		
+	}
+	
+	
+	@:noCompletion public override function __update (transformOnly:Bool, updateChildren:Bool):Void {
+		
+		if (transformOnly) {
+			
+			if (DisplayObject.__worldTransformDirty > 0) {
+				
+				super.__update (true, updateChildren);
+				
+				if (updateChildren) {
+					
+					DisplayObject.__worldTransformDirty = 0;
+					__dirty = true;
+					
+				}
+				
+			}
+			
+		} else {
+			
+			if (DisplayObject.__worldTransformDirty > 0 || __dirty || DisplayObject.__worldRenderDirty > 0) {
+				
+				super.__update (false, updateChildren);
+				
+				if (updateChildren) {
+					
+					#if dom
+					__wasDirty = true;
+					#end
+					
+					DisplayObject.__worldTransformDirty = 0;
+					DisplayObject.__worldRenderDirty = 0;
+					__dirty = false;
+					
+				}
+				
+			} #if dom else if (__wasDirty) {
+				
+				// If we were dirty last time, we need at least one more
+				// update in order to clear "changed" properties
+				
+				super.__update (false, updateChildren);
+				
+				if (updateChildren) {
+					
+					__wasDirty = false;
+					
+				}
+				
+			} #end
+			
+		}
+		
+	}
+	
+	
+	
+	
+	// Get & Set Methods
+	
+	
+	
+	
+	@:noCompletion private override function get_mouseX ():Float {
+		
+		return __mouseX;
+		
+	}
+	
+	
+	@:noCompletion private override function get_mouseY ():Float {
+		
+		return __mouseY;
+		
+	}
+	
+	
+	
+	
+	// Event Handlers
+	
+	
+	
+	
+	#if js
+	@:noCompletion private function canvas_onContextLost (event:js.html.webgl.ContextEvent):Void {
+		
+		//__glContextLost = true;
+		
+	}
+	
+	
+	@:noCompletion private function canvas_onContextRestored (event:js.html.webgl.ContextEvent):Void {
+		
+		//__glContextLost = false;
+		
+	}
+	#end
+	
+	
+	
+	
+	// Get & Set Methods
+	
+	
+	
+	
+	@:noCompletion private function get_color ():Int {
+		
+		return __color;
+		
+	}
+	
+	
+	@:noCompletion private function set_color (value:Int):Int {
+		
+		var r = (value & 0xFF0000) >>> 16;
+		var g = (value & 0x00FF00) >>> 8;
+		var b = (value & 0x0000FF);
+		
+		__colorSplit = [ r / 0xFF, g / 0xFF, b / 0xFF ];
+		__colorString = "#" + StringTools.hex (value, 6);
+		
+		return __color = value;
+		
+	}
+	
+	
+	@:noCompletion private function get_focus ():InteractiveObject {
+		
+		return __focus;
+		
+	}
+	
+	
+	@:noCompletion private function set_focus (value:InteractiveObject):InteractiveObject {
+		
+		if (value != __focus) {
+			
+			if (__focus != null) {
+				
+				var event = new FocusEvent (FocusEvent.FOCUS_OUT, true, false, value, false, 0);
+				__stack = [];
+				__focus.__getInteractive (__stack);
+				__stack.reverse ();
+				__fireEvent (event, __stack);
+				
+			}
+			
+			if (value != null) {
+				
+				var event = new FocusEvent (FocusEvent.FOCUS_IN, true, false, __focus, false, 0);
+				__stack = [];
+				value.__getInteractive (__stack);
+				__stack.reverse ();
+				__fireEvent (event, __stack);
+				
+			}
+			
+			__focus = value;
+			
+		}
+		
+		return __focus;
+		
+	}
+	
+	
+	@:noCompletion private function set_displayState (value:StageDisplayState):StageDisplayState {
+		
+		/*switch(value) {
+			case NORMAL:
+				var fs_exit_function = untyped __js__("function() {
+			    if (document.exitFullscreen) {
+			      document.exitFullscreen();
+			    } else if (document.msExitFullscreen) {
+			      document.msExitFullscreen();
+			    } else if (document.mozCancelFullScreen) {
+			      document.mozCancelFullScreen();
+			    } else if (document.webkitExitFullscreen) {
+			      document.webkitExitFullscreen();
+			    }
+				}");
+				fs_exit_function();
+			case FULL_SCREEN | FULL_SCREEN_INTERACTIVE:
+				var fsfunction = untyped __js__("function(elem) {
+					if (elem.requestFullscreen) elem.requestFullscreen();
+					else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
+					else if (elem.mozRequestFullScreen) elem.mozRequestFullScreen();
+					else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
+				}");
+				fsfunction(__element);
+			default:
+		}*/
+		displayState = value;
+		return value;
+		
+	}
+	
+	
 }
 
 
+#else
+typedef Stage = openfl._v2.display.Stage;
+#end
+#else
+typedef Stage = flash.display.Stage;
 #end

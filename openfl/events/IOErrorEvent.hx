@@ -1,13 +1,4 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
-
-package openfl.events;
-#if display
+package openfl.events; #if !flash
 
 
 /**
@@ -20,8 +11,18 @@ package openfl.events;
  * constructor is displayed.</p>
  * 
  */
-extern class IOErrorEvent extends ErrorEvent {
-
+class IOErrorEvent extends ErrorEvent {
+	
+	
+	/**
+	 * Defines the value of the <code>type</code> property of an
+	 * <code>ioError</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var IO_ERROR = "ioError";
+	
+	
 	/**
 	 * Creates an Event object that contains specific information about
 	 * <code>ioError</code> events. Event objects are passed as parameters to
@@ -44,19 +45,30 @@ extern class IOErrorEvent extends ErrorEvent {
 	 * @param id         A reference number to associate with the specific error
 	 *                  (supported in Adobe AIR only).
 	 */
-	function new(type : String, bubbles : Bool = false, cancelable : Bool = false, ?text : String, id : Int = 0) : Void;
-	static var DISK_ERROR : String;
-
-	/**
-	 * Defines the value of the <code>type</code> property of an
-	 * <code>ioError</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var IO_ERROR : String;
-	static var NETWORK_ERROR : String;
-	static var VERIFY_ERROR : String;
+	public function new (type:String, bubbles:Bool = true, cancelable:Bool = false, text:String = "", id:Int = 0) {
+		
+		super (type, bubbles, cancelable, text, id);
+		
+	}
+	
+	
+	public override function clone ():Event {
+		
+		return new IOErrorEvent (type, bubbles, cancelable, text, errorID);
+		
+	}
+	
+	
+	public override function toString ():String {
+		
+		return "[IOErrorEvent type=" + type + " bubbles=" + bubbles + " cancelable=" + cancelable + " text=" + text + " errorID=" + errorID + "]";
+		
+	}
+	
+	
 }
 
 
+#else
+typedef IOErrorEvent = flash.events.IOErrorEvent;
 #end

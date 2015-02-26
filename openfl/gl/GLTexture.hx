@@ -1,12 +1,8 @@
 package openfl.gl;
-#if display
 
 
-extern class GLTexture extends GLObject {
-	
-	function new(inVersion:Int, inId:Dynamic):Void;
-	
-}
-
-
+#if lime_legacy
+typedef GLTexture = openfl._v2.gl.GLTexture;
+#else
+typedef GLTexture = lime.graphics.opengl.GLTexture;
 #end

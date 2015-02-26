@@ -1,13 +1,7 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
+package openfl.events; #if !flash
 
-package openfl.events;
-#if display
+
+import openfl.display.InteractiveObject;
 
 
 /**
@@ -22,14 +16,48 @@ package openfl.events;
  * </ul>
  * 
  */
-extern class FocusEvent extends Event {
-
+class FocusEvent extends Event {
+	
+	
+	/**
+	 * Defines the value of the <code>type</code> property of a
+	 * <code>focusIn</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var FOCUS_IN = "focusIn";
+	
+	/**
+	 * Defines the value of the <code>type</code> property of a
+	 * <code>focusOut</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var FOCUS_OUT = "focusOut";
+	
+	/**
+	 * Defines the value of the <code>type</code> property of a
+	 * <code>keyFocusChange</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var KEY_FOCUS_CHANGE = "keyFocusChange";
+	
+	/**
+	 * Defines the value of the <code>type</code> property of a
+	 * <code>mouseFocusChange</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var MOUSE_FOCUS_CHANGE = "mouseFocusChange";
+	
+	
 	/**
 	 * The key code value of the key pressed to trigger a
 	 * <code>keyFocusChange</code> event.
 	 */
-	var keyCode : UInt;
-
+	public var keyCode:Int;
+	
 	/**
 	 * A reference to the complementary InteractiveObject instance that is
 	 * affected by the change in focus. For example, when a <code>focusOut</code>
@@ -42,16 +70,17 @@ extern class FocusEvent extends Event {
 	 * <code>isRelatedObjectInaccessible()</code> property to determine which of
 	 * these reasons applies.</p>
 	 */
-	var relatedObject : openfl.display.InteractiveObject;
-
+	public var relatedObject:InteractiveObject;
+	
 	/**
 	 * Indicates whether the Shift key modifier is activated, in which case the
 	 * value is <code>true</code>. Otherwise, the value is <code>false</code>.
 	 * This property is used only if the FocusEvent is of type
 	 * <code>keyFocusChange</code>.
 	 */
-	var shiftKey : Bool;
-
+	public var shiftKey:Bool;
+	
+	
 	/**
 	 * Creates an Event object with specific information relevant to focus
 	 * events. Event objects are passed as parameters to event listeners.
@@ -74,40 +103,40 @@ extern class FocusEvent extends Event {
 	 * @param keyCode       Indicates the code of the key pressed to trigger a
 	 *                      <code>keyFocusChange</code> event.
 	 */
-	function new(type : String, bubbles : Bool = true, cancelable : Bool = false, ?relatedObject : openfl.display.InteractiveObject, shiftKey : Bool = false, keyCode : UInt = 0) : Void;
-
-	/**
-	 * Defines the value of the <code>type</code> property of a
-	 * <code>focusIn</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var FOCUS_IN : String;
-
-	/**
-	 * Defines the value of the <code>type</code> property of a
-	 * <code>focusOut</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var FOCUS_OUT : String;
-
-	/**
-	 * Defines the value of the <code>type</code> property of a
-	 * <code>keyFocusChange</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var KEY_FOCUS_CHANGE : String;
-
-	/**
-	 * Defines the value of the <code>type</code> property of a
-	 * <code>mouseFocusChange</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var MOUSE_FOCUS_CHANGE : String;
+	public function new (type:String, bubbles:Bool = false, cancelable:Bool = false, relatedObject:InteractiveObject = null, shiftKey:Bool = false, keyCode:Int = 0) {
+		
+		super (type, bubbles, cancelable);
+		
+		this.keyCode = keyCode;
+		this.shiftKey = shiftKey;
+		this.relatedObject = relatedObject;
+		
+	}
+	
+	
+	public override function clone ():Event {
+		
+		var event = new FocusEvent (type, bubbles, cancelable, relatedObject, shiftKey, keyCode);
+		event.target = target;
+		event.currentTarget = currentTarget;
+		#if !lime_legacy
+		event.eventPhase = eventPhase;
+		#end
+		return event;
+		
+	}
+	
+	
+	public override function toString ():String {
+		
+		return "[FocusEvent type=" + type + " bubbles=" + bubbles + " cancelable=" + cancelable + " relatedObject=" + relatedObject + " shiftKey=" + shiftKey + " keyCode=" + keyCode + "]";
+		
+	}
+	
+	
 }
 
 
+#else
+typedef FocusEvent = flash.events.FocusEvent;
 #end

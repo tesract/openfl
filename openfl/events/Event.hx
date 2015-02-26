@@ -1,13 +1,7 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
+package openfl.events; #if !flash #if !lime_legacy
 
-package openfl.events;
-#if display
+
+import openfl.display.InteractiveObject;
 
 
 /**
@@ -60,8 +54,236 @@ package openfl.events;
  * </ul>
  * 
  */
-extern class Event {
-
+class Event {
+	
+	
+	/**
+	 * The <code>ACTIVATE</code> constant defines the value of the
+	 * <code>type</code> property of an <code>activate</code> event object.
+	 *
+	 * <p><b>Note:</b> This event has neither a "capture phase" nor a "bubble
+	 * phase", which means that event listeners must be added directly to any
+	 * potential targets, whether the target is on the display list or not.</p>
+	 *
+	 * <p>AIR for TV devices never automatically dispatch this event. You can,
+	 * however, dispatch it manually.</p>
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var ACTIVATE = "activate";
+	
+	/**
+	 * The <code>Event.ADDED</code> constant defines the value of the
+	 * <code>type</code> property of an <code>added</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var ADDED = "added";
+	
+	/**
+	 * The <code>Event.ADDED_TO_STAGE</code> constant defines the value of the
+	 * <code>type</code> property of an <code>addedToStage</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var ADDED_TO_STAGE = "addedToStage";
+	
+	/**
+	 * The <code>Event.CANCEL</code> constant defines the value of the
+	 * <code>type</code> property of a <code>cancel</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var CANCEL = "cancel";
+	
+	/**
+	 * The <code>Event.CHANGE</code> constant defines the value of the
+	 * <code>type</code> property of a <code>change</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var CHANGE = "change";
+	
+	/**
+	 * The <code>Event.CLOSE</code> constant defines the value of the
+	 * <code>type</code> property of a <code>close</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var CLOSE = "close";
+	
+	/**
+	 * The <code>Event.COMPLETE</code> constant defines the value of the
+	 * <code>type</code> property of a <code>complete</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var COMPLETE = "complete";
+	
+	/**
+	 * The <code>Event.CONNECT</code> constant defines the value of the
+	 * <code>type</code> property of a <code>connect</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var CONNECT = "connect";
+	public static var CONTEXT3D_CREATE = "context3DCreate";
+	
+	/**
+	 * The <code>Event.DEACTIVATE</code> constant defines the value of the
+	 * <code>type</code> property of a <code>deactivate</code> event object.
+	 *
+	 * <p><b>Note:</b> This event has neither a "capture phase" nor a "bubble
+	 * phase", which means that event listeners must be added directly to any
+	 * potential targets, whether the target is on the display list or not.</p>
+	 *
+	 * <p>AIR for TV devices never automatically dispatch this event. You can,
+	 * however, dispatch it manually.</p>
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var DEACTIVATE = "deactivate";
+	
+	/**
+	 * The <code>Event.ENTER_FRAME</code> constant defines the value of the
+	 * <code>type</code> property of an <code>enterFrame</code> event object.
+	 *
+	 * <p><b>Note:</b> This event has neither a "capture phase" nor a "bubble
+	 * phase", which means that event listeners must be added directly to any
+	 * potential targets, whether the target is on the display list or not.</p>
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var ENTER_FRAME = "enterFrame";
+	
+	/**
+	 * The <code>Event.ID3</code> constant defines the value of the
+	 * <code>type</code> property of an <code>id3</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var ID3 = "id3";
+	
+	/**
+	 * The <code>Event.INIT</code> constant defines the value of the
+	 * <code>type</code> property of an <code>init</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var INIT = "init";
+	
+	/**
+	 * The <code>Event.MOUSE_LEAVE</code> constant defines the value of the
+	 * <code>type</code> property of a <code>mouseLeave</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var MOUSE_LEAVE = "mouseLeave";
+	
+	/**
+	 * The <code>Event.OPEN</code> constant defines the value of the
+	 * <code>type</code> property of an <code>open</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var OPEN = "open";
+	
+	/**
+	 * The <code>Event.REMOVED</code> constant defines the value of the
+	 * <code>type</code> property of a <code>removed</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var REMOVED = "removed";
+	
+	/**
+	 * The <code>Event.REMOVED_FROM_STAGE</code> constant defines the value of
+	 * the <code>type</code> property of a <code>removedFromStage</code> event
+	 * object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var REMOVED_FROM_STAGE = "removedFromStage";
+	
+	/**
+	 * The <code>Event.RENDER</code> constant defines the value of the
+	 * <code>type</code> property of a <code>render</code> event object.
+	 *
+	 * <p><b>Note:</b> This event has neither a "capture phase" nor a "bubble
+	 * phase", which means that event listeners must be added directly to any
+	 * potential targets, whether the target is on the display list or not.</p>
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var RENDER = "render";
+	
+	/**
+	 * The <code>Event.RESIZE</code> constant defines the value of the
+	 * <code>type</code> property of a <code>resize</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var RESIZE = "resize";
+	
+	/**
+	 * The <code>Event.SCROLL</code> constant defines the value of the
+	 * <code>type</code> property of a <code>scroll</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var SCROLL = "scroll";
+	
+	/**
+	 * The <code>Event.SELECT</code> constant defines the value of the
+	 * <code>type</code> property of a <code>select</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var SELECT = "select";
+	
+	/**
+	 * The <code>Event.SOUND_COMPLETE</code> constant defines the value of the
+	 * <code>type</code> property of a <code>soundComplete</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var SOUND_COMPLETE = "soundComplete";
+	
+	/**
+	 * The <code>Event.TAB_CHILDREN_CHANGE</code> constant defines the value of
+	 * the <code>type</code> property of a <code>tabChildrenChange</code> event
+	 * object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var TAB_CHILDREN_CHANGE = "tabChildrenChange";
+	
+	/**
+	 * The <code>Event.TAB_ENABLED_CHANGE</code> constant defines the value of
+	 * the <code>type</code> property of a <code>tabEnabledChange</code> event
+	 * object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var TAB_ENABLED_CHANGE = "tabEnabledChange";
+	
+	/**
+	 * The <code>Event.TAB_INDEX_CHANGE</code> constant defines the value of the
+	 * <code>type</code> property of a <code>tabIndexChange</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var TAB_INDEX_CHANGE = "tabIndexChange";
+	
+	/**
+	 * The <code>Event.UNLOAD</code> constant defines the value of the
+	 * <code>type</code> property of an <code>unload</code> event object.
+	 *
+	 * <p>This event has the following properties:</p>
+	 */
+	public static var UNLOAD = "unload";
+	
+	
 	/**
 	 * Indicates whether an event is a bubbling event. If the event can bubble,
 	 * this value is <code>true</code>; otherwise it is <code>false</code>.
@@ -77,23 +299,23 @@ extern class Event {
 	 * has a value of <code>false</code> for events that do not have a bubbling
 	 * phase.</p>
 	 */
-	var bubbles(default,null) : Bool;
-
+	public var bubbles (default, null):Bool;
+	
 	/**
 	 * Indicates whether the behavior associated with the event can be prevented.
 	 * If the behavior can be canceled, this value is <code>true</code>;
 	 * otherwise it is <code>false</code>.
 	 */
-	var cancelable(default,null) : Bool;
-
+	public var cancelable (default, null):Bool;
+	
 	/**
 	 * The object that is actively processing the Event object with an event
 	 * listener. For example, if a user clicks an OK button, the current target
 	 * could be the node containing that button or one of its ancestors that has
 	 * registered an event listener for that event.
 	 */
-	var currentTarget(default,null) : Dynamic;
-
+	public var currentTarget:Dynamic;
+	
 	/**
 	 * The current phase in the event flow. This property can contain the
 	 * following numeric values:
@@ -103,20 +325,24 @@ extern class Event {
 	 *   <li> The bubbling phase(<code>EventPhase.BUBBLING_PHASE</code>).</li>
 	 * </ul>
 	 */
-	var eventPhase(default,null) : EventPhase;
-
+	public var eventPhase (default, null):EventPhase;
+	
 	/**
 	 * The event target. This property contains the target node. For example, if
 	 * a user clicks an OK button, the target node is the display list node
 	 * containing that button.
 	 */
-	var target(default,null) : Dynamic;
-
+	public var target:Dynamic;
+	
 	/**
 	 * The type of event. The type is case-sensitive.
 	 */
-	var type(default,null) : String;
-
+	public var type (default, null):String;
+	
+	@:noCompletion private var __isCancelled:Bool;
+	@:noCompletion private var __isCancelledNow:Bool;
+	
+	
 	/**
 	 * Creates an Event object to pass as a parameter to event listeners.
 	 * 
@@ -128,8 +354,16 @@ extern class Event {
 	 * @param cancelable Determines whether the Event object can be canceled. The
 	 *                   default values is <code>false</code>.
 	 */
-	function new(type : String, bubbles : Bool = false, cancelable : Bool = false) : Void;
-
+	public function new (type:String, bubbles:Bool = false, cancelable:Bool = false) {
+		
+		this.type = type;
+		this.bubbles = bubbles;
+		this.cancelable = cancelable;
+		eventPhase = EventPhase.AT_TARGET;
+		
+	}
+	
+	
 	/**
 	 * Duplicates an instance of an Event subclass.
 	 *
@@ -153,8 +387,17 @@ extern class Event {
 	 * 
 	 * @return A new Event object that is identical to the original.
 	 */
-	function clone() : Event;
-
+	public function clone ():Event {
+		
+		var event = new Event (type, bubbles, cancelable);
+		event.eventPhase = eventPhase;
+		event.target = target;
+		event.currentTarget = currentTarget;
+		return event;
+		
+	}
+	
+	
 	/**
 	 * Checks whether the <code>preventDefault()</code> method has been called on
 	 * the event. If the <code>preventDefault()</code> method has been called,
@@ -163,8 +406,13 @@ extern class Event {
 	 * @return If <code>preventDefault()</code> has been called, returns
 	 *         <code>true</code>; otherwise, returns <code>false</code>.
 	 */
-	function isDefaultPrevented() : Bool;
-
+	public function isDefaultPrevented ():Bool {
+		
+		return (__isCancelled || __isCancelledNow);
+		
+	}
+	
+	
 	/**
 	 * Prevents processing of any event listeners in the current node and any
 	 * subsequent nodes in the event flow. This method takes effect immediately,
@@ -176,8 +424,14 @@ extern class Event {
 	 * this event; see <code>preventDefault()</code> for that functionality.</p>
 	 * 
 	 */
-	function stopImmediatePropagation() : Void;
-
+	public function stopImmediatePropagation ():Void {
+		
+		__isCancelled = true;
+		__isCancelledNow = true;
+		
+	}
+	
+	
 	/**
 	 * Prevents processing of any event listeners in nodes subsequent to the
 	 * current node in the event flow. This method does not affect any event
@@ -191,8 +445,13 @@ extern class Event {
 	 * this event; see <code>preventDefault()</code> for that functionality.</p>
 	 * 
 	 */
-	function stopPropagation() : Void;
-
+	public function stopPropagation ():Void {
+		
+		__isCancelled = true;
+		
+	}
+	
+	
 	/**
 	 * Returns a string containing all the properties of the Event object. The
 	 * string is in the following format:
@@ -202,387 +461,19 @@ extern class Event {
 	 * 
 	 * @return A string containing all the properties of the Event object.
 	 */
-	function toString() : String;
-
-	/**
-	 * The <code>ACTIVATE</code> constant defines the value of the
-	 * <code>type</code> property of an <code>activate</code> event object.
-	 *
-	 * <p><b>Note:</b> This event has neither a "capture phase" nor a "bubble
-	 * phase", which means that event listeners must be added directly to any
-	 * potential targets, whether the target is on the display list or not.</p>
-	 *
-	 * <p>AIR for TV devices never automatically dispatch this event. You can,
-	 * however, dispatch it manually.</p>
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var ACTIVATE : String;
-
-	/**
-	 * The <code>Event.ADDED</code> constant defines the value of the
-	 * <code>type</code> property of an <code>added</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var ADDED : String;
-
-	/**
-	 * The <code>Event.ADDED_TO_STAGE</code> constant defines the value of the
-	 * <code>type</code> property of an <code>addedToStage</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var ADDED_TO_STAGE : String;
-
-	/**
-	 * The <code>Event.CANCEL</code> constant defines the value of the
-	 * <code>type</code> property of a <code>cancel</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var CANCEL : String;
+	public function toString ():String {
+		
+		return "[Event type=" + type + " bubbles=" + bubbles + " cancelable=" + cancelable + "]";
+		
+	}
 	
-	static var CHANNEL_MESSAGE : String;
-	static var CHANNEL_STATE : String;
-
-	/**
-	 * The <code>Event.CHANGE</code> constant defines the value of the
-	 * <code>type</code> property of a <code>change</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var CHANGE : String;
-
-	/**
-	 * The <code>Event.CLEAR</code> constant defines the value of the
-	 * <code>type</code> property of a <code>clear</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 *
-	 * <p><b>Note:</b> TextField objects do <i>not</i> dispatch
-	 * <code>clear</code>, <code>copy</code>, <code>cut</code>,
-	 * <code>paste</code>, or <code>selectAll</code> events. TextField objects
-	 * always include Cut, Copy, Paste, Clear, and Select All commands in the
-	 * context menu. You cannot remove these commands from the context menu for
-	 * TextField objects. For TextField objects, selecting these commands(or
-	 * their keyboard equivalents) does not generate <code>clear</code>,
-	 * <code>copy</code>, <code>cut</code>, <code>paste</code>, or
-	 * <code>selectAll</code> events. However, other classes that extend the
-	 * InteractiveObject class, including components built using the Flash Text
-	 * Engine(FTE), will dispatch these events in response to user actions such
-	 * as keyboard shortcuts and context menus.</p>
-	 */
-	static var CLEAR : String;
-
-	/**
-	 * The <code>Event.CLOSE</code> constant defines the value of the
-	 * <code>type</code> property of a <code>close</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var CLOSE : String;
-
-	/**
-	 * The <code>Event.COMPLETE</code> constant defines the value of the
-	 * <code>type</code> property of a <code>complete</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var COMPLETE : String;
-
-	/**
-	 * The <code>Event.CONNECT</code> constant defines the value of the
-	 * <code>type</code> property of a <code>connect</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var CONNECT : String;
-	static var CONTEXT3D_CREATE : String;
-
-	/**
-	 * Defines the value of the <code>type</code> property of a <code>copy</code>
-	 * event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 *
-	 * <p><b>Note:</b> TextField objects do <i>not</i> dispatch
-	 * <code>clear</code>, <code>copy</code>, <code>cut</code>,
-	 * <code>paste</code>, or <code>selectAll</code> events. TextField objects
-	 * always include Cut, Copy, Paste, Clear, and Select All commands in the
-	 * context menu. You cannot remove these commands from the context menu for
-	 * TextField objects. For TextField objects, selecting these commands(or
-	 * their keyboard equivalents) does not generate <code>clear</code>,
-	 * <code>copy</code>, <code>cut</code>, <code>paste</code>, or
-	 * <code>selectAll</code> events. However, other classes that extend the
-	 * InteractiveObject class, including components built using the Flash Text
-	 * Engine(FTE), will dispatch these events in response to user actions such
-	 * as keyboard shortcuts and context menus.</p>
-	 */
-	static var COPY : String;
-
-	/**
-	 * Defines the value of the <code>type</code> property of a <code>cut</code>
-	 * event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 *
-	 * <p><b>Note:</b> TextField objects do <i>not</i> dispatch
-	 * <code>clear</code>, <code>copy</code>, <code>cut</code>,
-	 * <code>paste</code>, or <code>selectAll</code> events. TextField objects
-	 * always include Cut, Copy, Paste, Clear, and Select All commands in the
-	 * context menu. You cannot remove these commands from the context menu for
-	 * TextField objects. For TextField objects, selecting these commands(or
-	 * their keyboard equivalents) does not generate <code>clear</code>,
-	 * <code>copy</code>, <code>cut</code>, <code>paste</code>, or
-	 * <code>selectAll</code> events. However, other classes that extend the
-	 * InteractiveObject class, including components built using the Flash Text
-	 * Engine(FTE), will dispatch these events in response to user actions such
-	 * as keyboard shortcuts and context menus.</p>
-	 */
-	static var CUT : String;
-
-	/**
-	 * The <code>Event.DEACTIVATE</code> constant defines the value of the
-	 * <code>type</code> property of a <code>deactivate</code> event object.
-	 *
-	 * <p><b>Note:</b> This event has neither a "capture phase" nor a "bubble
-	 * phase", which means that event listeners must be added directly to any
-	 * potential targets, whether the target is on the display list or not.</p>
-	 *
-	 * <p>AIR for TV devices never automatically dispatch this event. You can,
-	 * however, dispatch it manually.</p>
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var DEACTIVATE : String;
-
-	/**
-	 * The <code>Event.ENTER_FRAME</code> constant defines the value of the
-	 * <code>type</code> property of an <code>enterFrame</code> event object.
-	 *
-	 * <p><b>Note:</b> This event has neither a "capture phase" nor a "bubble
-	 * phase", which means that event listeners must be added directly to any
-	 * potential targets, whether the target is on the display list or not.</p>
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var ENTER_FRAME : String;
-
-	/**
-	 * The <code>Event.EXIT_FRAME</code> constant defines the value of the
-	 * <code>type</code> property of an <code>exitFrame</code> event object.
-	 *
-	 * <p><b>Note:</b> This event has neither a "capture phase" nor a "bubble
-	 * phase", which means that event listeners must be added directly to any
-	 * potential targets, whether the target is on the display list or not.</p>
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var EXIT_FRAME : String;
-
-	/**
-	 * The <code>Event.FRAME_CONSTRUCTED</code> constant defines the value of the
-	 * <code>type</code> property of an <code>frameConstructed</code> event
-	 * object.
-	 *
-	 * <p><b>Note:</b> This event has neither a "capture phase" nor a "bubble
-	 * phase", which means that event listeners must be added directly to any
-	 * potential targets, whether the target is on the display list or not.</p>
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var FRAME_CONSTRUCTED : String;
-
-	/**
-	 * The <code>Event.FULL_SCREEN</code> constant defines the value of the
-	 * <code>type</code> property of a <code>fullScreen</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var FULLSCREEN : String;
-
-	/**
-	 * The <code>Event.ID3</code> constant defines the value of the
-	 * <code>type</code> property of an <code>id3</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var ID3 : String;
-
-	/**
-	 * The <code>Event.INIT</code> constant defines the value of the
-	 * <code>type</code> property of an <code>init</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var INIT : String;
-
-	/**
-	 * The <code>Event.MOUSE_LEAVE</code> constant defines the value of the
-	 * <code>type</code> property of a <code>mouseLeave</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var MOUSE_LEAVE : String;
-
-	/**
-	 * The <code>Event.OPEN</code> constant defines the value of the
-	 * <code>type</code> property of an <code>open</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var OPEN : String;
-
-	/**
-	 * The <code>Event.PASTE</code> constant defines the value of the
-	 * <code>type</code> property of a <code>paste</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 *
-	 * <p><b>Note:</b> TextField objects do <i>not</i> dispatch
-	 * <code>clear</code>, <code>copy</code>, <code>cut</code>,
-	 * <code>paste</code>, or <code>selectAll</code> events. TextField objects
-	 * always include Cut, Copy, Paste, Clear, and Select All commands in the
-	 * context menu. You cannot remove these commands from the context menu for
-	 * TextField objects. For TextField objects, selecting these commands(or
-	 * their keyboard equivalents) does not generate <code>clear</code>,
-	 * <code>copy</code>, <code>cut</code>, <code>paste</code>, or
-	 * <code>selectAll</code> events. However, other classes that extend the
-	 * InteractiveObject class, including components built using the Flash Text
-	 * Engine(FTE), will dispatch these events in response to user actions such
-	 * as keyboard shortcuts and context menus.</p>
-	 */
-	static var PASTE : String;
-
-	/**
-	 * The <code>Event.REMOVED</code> constant defines the value of the
-	 * <code>type</code> property of a <code>removed</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var REMOVED : String;
-
-	/**
-	 * The <code>Event.REMOVED_FROM_STAGE</code> constant defines the value of
-	 * the <code>type</code> property of a <code>removedFromStage</code> event
-	 * object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var REMOVED_FROM_STAGE : String;
-
-	/**
-	 * The <code>Event.RENDER</code> constant defines the value of the
-	 * <code>type</code> property of a <code>render</code> event object.
-	 *
-	 * <p><b>Note:</b> This event has neither a "capture phase" nor a "bubble
-	 * phase", which means that event listeners must be added directly to any
-	 * potential targets, whether the target is on the display list or not.</p>
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var RENDER : String;
-
-	/**
-	 * The <code>Event.RESIZE</code> constant defines the value of the
-	 * <code>type</code> property of a <code>resize</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var RESIZE : String;
-
-	/**
-	 * The <code>Event.SCROLL</code> constant defines the value of the
-	 * <code>type</code> property of a <code>scroll</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var SCROLL : String;
-
-	/**
-	 * The <code>Event.SELECT</code> constant defines the value of the
-	 * <code>type</code> property of a <code>select</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var SELECT : String;
-
-	/**
-	 * The <code>Event.SELECT_ALL</code> constant defines the value of the
-	 * <code>type</code> property of a <code>selectAll</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 *
-	 * <p><b>Note:</b> TextField objects do <i>not</i> dispatch
-	 * <code>clear</code>, <code>copy</code>, <code>cut</code>,
-	 * <code>paste</code>, or <code>selectAll</code> events. TextField objects
-	 * always include Cut, Copy, Paste, Clear, and Select All commands in the
-	 * context menu. You cannot remove these commands from the context menu for
-	 * TextField objects. For TextField objects, selecting these commands(or
-	 * their keyboard equivalents) does not generate <code>clear</code>,
-	 * <code>copy</code>, <code>cut</code>, <code>paste</code>, or
-	 * <code>selectAll</code> events. However, other classes that extend the
-	 * InteractiveObject class, including components built using the Flash Text
-	 * Engine(FTE), will dispatch these events in response to user actions such
-	 * as keyboard shortcuts and context menus.</p>
-	 */
-	static var SELECT_ALL : String;
-
-	/**
-	 * The <code>Event.SOUND_COMPLETE</code> constant defines the value of the
-	 * <code>type</code> property of a <code>soundComplete</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var SOUND_COMPLETE : String;
-
-	/**
-	 * The <code>Event.TAB_CHILDREN_CHANGE</code> constant defines the value of
-	 * the <code>type</code> property of a <code>tabChildrenChange</code> event
-	 * object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var TAB_CHILDREN_CHANGE : String;
-
-	/**
-	 * The <code>Event.TAB_ENABLED_CHANGE</code> constant defines the value of
-	 * the <code>type</code> property of a <code>tabEnabledChange</code> event
-	 * object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var TAB_ENABLED_CHANGE : String;
-
-	/**
-	 * The <code>Event.TAB_INDEX_CHANGE</code> constant defines the value of the
-	 * <code>type</code> property of a <code>tabIndexChange</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var TAB_INDEX_CHANGE : String;
-
-	/**
-	 * The <code>Event.TEXT_INTERACTION_MODE_CHANGE</code> constant defines the
-	 * value of the <code>type</code> property of a <code>interaction mode</code>
-	 * event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var TEXT_INTERACTION_MODE_CHANGE : String;
-
-	/**
-	 * The <code>Event.UNLOAD</code> constant defines the value of the
-	 * <code>type</code> property of an <code>unload</code> event object.
-	 *
-	 * <p>This event has the following properties:</p>
-	 */
-	static var UNLOAD : String;
 	
-	static var VIDEO_FRAME : String;
-	static var WORKER_STATE : String;
 }
 
 
+#else
+typedef Event = openfl._v2.events.Event;
+#end
+#else
+typedef Event = flash.events.Event;
 #end

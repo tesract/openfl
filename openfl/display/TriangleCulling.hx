@@ -1,13 +1,4 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
-
-package openfl.display;
-#if display
+package openfl.display; #if !flash #if !lime_legacy
 
 
 /**
@@ -31,24 +22,30 @@ package openfl.display;
  * <code>TriangleCulling.NEGATIVE</code> algorithm is used, triangles with
  * negative normals will not be rendered. </p>
  */
-@:fakeEnum(String) extern enum TriangleCulling {
-
+enum TriangleCulling {
+	
 	/**
 	 * Specifies culling of all triangles facing toward the current view point.
 	 */
 	NEGATIVE;
-
+	
 	/**
 	 * Specifies no culling. All triangles in the path are rendered.
 	 */
 	NONE;
-
+	
 	/**
 	 * Specifies culling of all triangles facing away from the current view
 	 * point. This is also known as backface culling.
 	 */
 	POSITIVE;
+	
 }
 
 
+#else
+typedef TriangleCulling = openfl._v2.display.TriangleCulling;
+#end
+#else
+typedef TriangleCulling = flash.display.TriangleCulling;
 #end

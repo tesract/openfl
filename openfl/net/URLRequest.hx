@@ -1,13 +1,7 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
+package openfl.net; #if !flash #if !lime_legacy
 
-package openfl.net;
-#if display
+
+import openfl.utils.ByteArray;
 
 
 /**
@@ -48,8 +42,9 @@ package openfl.net;
  * Center Topic: <a href="http://www.adobe.com/go/devnet_security_en"
  * scope="external">Security</a>.</p>
  */
-@:final extern class URLRequest {
-
+class URLRequest {
+	
+	
 	/**
 	 * The MIME content type of the content in the the <code>data</code>
 	 * property.
@@ -100,8 +95,8 @@ package openfl.net;
 	 * the POST operation is subject to the security rules applied to
 	 * uploads.</p>
 	 */
-	var contentType : String;
-
+	public var contentType:String;
+	
 	/**
 	 * An object containing data to be transmitted with the URL request.
 	 *
@@ -147,8 +142,8 @@ package openfl.net;
 	 * the type of data in the <code>data</code> property. See the note in the
 	 * description of the <code>contentType</code> property.</p>
 	 */
-	var data : Dynamic;
-
+	public var data:Dynamic;
+	
 	/**
 	 * Controls the HTTP form submission method.
 	 *
@@ -178,8 +173,8 @@ package openfl.net;
 	 *                       <code>URLRequestMethod.GET</code> or
 	 *                       <code>URLRequestMethod.POST</code>.
 	 */
-	var method : String;
-
+	public var method:String;
+	
 	/**
 	 * The array of HTTP request headers to be appended to the HTTP request. The
 	 * array is composed of URLRequestHeader objects. Each object in the array
@@ -201,8 +196,8 @@ package openfl.net;
 	 * supported for <code>POST</code> requests, not for <code>GET</code>
 	 * requests.</p>
 	 */
-	var requestHeaders : Array<URLRequestHeader>;
-
+	public var requestHeaders:Array<URLRequestHeader>;
+	
 	/**
 	 * The URL to be requested.
 	 *
@@ -242,13 +237,10 @@ package openfl.net;
 	 * <pre xml:space="preserve">
 	 * rtmp://[2001:db8:ccc3:ffff:0:444d:555e:666f]:1935/test </pre>
 	 */
-	var url : String;
+	public var url:String;
+	public var userAgent:String;
 	
-    /**
-     * Specifies the user-agent string to be used in the HTTP request.
-     */
-    var userAgent : String;
-
+	
 	/**
 	 * Creates a URLRequest object. If <code>System.useCodePage</code> is
 	 * <code>true</code>, the request is encoded using the system code page,
@@ -259,8 +251,46 @@ package openfl.net;
 	 * @param url The URL to be requested. You can set the URL later by using the
 	 *            <code>url</code> property.
 	 */
-	function new(?url : String) : Void;
+	public function new (inURL:String = null) {
+		
+		if (inURL != null) {
+			
+			url = inURL;
+			
+		}
+		
+		requestHeaders = [];
+		method = URLRequestMethod.GET;
+		contentType = null; // "application/x-www-form-urlencoded";
+		
+	}
+	
+	
+	public function formatRequestHeaders ():Array<URLRequestHeader> {
+		
+		var res = requestHeaders;
+		if (res == null) res = [];
+		
+		if (method == URLRequestMethod.GET || data == null) return res;
+		
+		if (Std.is (data, String) || Std.is (data, ByteArray)) {
+			
+			res = res.copy ();
+			res.push (new URLRequestHeader ("Content-Type", contentType != null ? contentType : "application/x-www-form-urlencoded"));
+			
+		}
+		
+		return res;
+		
+	}
+	
+	
 }
 
 
+#else
+typedef URLRequest = openfl._v2.net.URLRequest;
+#end
+#else
+typedef URLRequest = flash.net.URLRequest;
 #end

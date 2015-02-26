@@ -1,13 +1,4 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
-
-package openfl.display;
-#if display
+package openfl.display; #if !flash
 
 
 /**
@@ -15,15 +6,14 @@ package openfl.display;
  * the pixel snapping options by using the <code>pixelSnapping</code> property
  * of a Bitmap object.
  */
-@:fakeEnum(String) extern enum PixelSnapping {
-
+enum PixelSnapping {
+	
 	/**
 	 * A constant value used in the <code>pixelSnapping</code> property of a
-	 * Bitmap object to specify that the bitmap image is always snapped to the
-	 * nearest pixel, independent of any transformation.
+	 * Bitmap object to specify that no pixel snapping occurs.
 	 */
-	ALWAYS;
-
+	NEVER;
+	
 	/**
 	 * A constant value used in the <code>pixelSnapping</code> property of a
 	 * Bitmap object to specify that the bitmap image is snapped to the nearest
@@ -34,13 +24,17 @@ package openfl.display;
 	 * vector renderer.
 	 */
 	AUTO;
-
+	
 	/**
 	 * A constant value used in the <code>pixelSnapping</code> property of a
-	 * Bitmap object to specify that no pixel snapping occurs.
+	 * Bitmap object to specify that the bitmap image is always snapped to the
+	 * nearest pixel, independent of any transformation.
 	 */
-	NEVER;
+	ALWAYS;
+	
 }
 
 
+#else
+typedef PixelSnapping = flash.display.PixelSnapping;
 #end

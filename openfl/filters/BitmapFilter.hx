@@ -1,13 +1,12 @@
-/*
- 
- This class provides code completion and inline documentation, but it does 
- not contain runtime support. It should be overridden by a compatible
- implementation in an OpenFL backend, depending upon the target platform.
- 
-*/
+package openfl.filters; #if !flash #if !lime_legacy
 
-package openfl.filters;
-#if display
+
+import openfl.geom.Point;
+import openfl.geom.Rectangle;
+
+#if js
+import js.html.ImageData;
+#end
 
 
 /**
@@ -20,17 +19,44 @@ package openfl.filters;
  *
  * <p>You can neither directly instantiate nor extend BitmapFilter.</p>
  */
-extern class BitmapFilter {
-	function new() : Void;
-
+class BitmapFilter {
+	
+	
+	public function new () {
+		
+		
+		
+	}
+	
+	
 	/**
 	 * Returns a BitmapFilter object that is an exact copy of the original
 	 * BitmapFilter object.
 	 * 
 	 * @return A BitmapFilter object.
 	 */
-	function clone() : BitmapFilter;
+	public function clone ():BitmapFilter {
+		
+		return new BitmapFilter ();
+		
+	}
+	
+	
+	#if js
+	@:noCompletion public function __applyFilter (sourceData:ImageData, targetData:ImageData, sourceRect:Rectangle, destPoint:Point):Void {
+		
+		
+		
+	}
+	#end
+	
+	
 }
 
 
+#else
+typedef BitmapFilter = openfl._v2.filters.BitmapFilter;
+#end
+#else
+typedef BitmapFilter = flash.filters.BitmapFilter;
 #end

@@ -1,12 +1,8 @@
 package openfl.gl;
-#if display
 
 
-extern class GLRenderbuffer extends GLObject {
-	
-	function new(inVersion:Int, inId:Dynamic):Void;
-	
-}
-
-
+#if lime_legacy
+typedef GLRenderbuffer = openfl._v2.gl.GLRenderbuffer;
+#else
+typedef GLRenderbuffer = lime.graphics.opengl.GLRenderbuffer;
 #end
